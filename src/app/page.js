@@ -1,103 +1,102 @@
-import Image from "next/image";
+import Layout from '@/components/Layout';
+import BookGrid from '@/components/BookGrid';
+import Link from "next/link";
 
-export default function Home() {
+async function getBooks() {
+  try {
+    // In development, we need to use the full URL
+    const baseUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://your-domain.com' 
+      : 'http://localhost:3000';
+    
+    const res = await fetch(`${baseUrl}/api/books`, {
+      cache: 'no-store' // Always fetch fresh data
+    });
+    
+    if (!res.ok) {
+      throw new Error('Failed to fetch books');
+    }
+    
+    const data = await res.json();
+    return data.books || [];
+  } catch (error) {
+    console.error('Error fetching books:', error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const books = await getBooks();
+  const featuredBooks = books.slice(0, 4); // Show only first 4 books on homepage
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <Layout>
+      {/* Hero Section */}
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          Welcome to Our Digital Bookstore
+        </h1>
+        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          Discover and purchase amazing books in PDF format. 
+          Download instantly after purchase and build your digital library.
+        </p>
+        
+        <div className="flex gap-4 justify-center flex-wrap">
+          <Link 
+            href="/books"
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Browse All Books
+          </Link>
+          <Link 
+            href="/admin"
+            className="bg-gray-600 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg font-semibold"
           >
-            Read our docs
-          </a>
+            Admin Panel
+          </Link>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+
+      {/* Stats Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="bg-white rounded-lg shadow-md p-6 text-center">
+          <div className="text-3xl font-bold text-blue-600 mb-2">{books.length}</div>
+          <div className="text-gray-600">Books Available</div>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-6 text-center">
+          <div className="text-3xl font-bold text-green-600 mb-2">PDF</div>
+          <div className="text-gray-600">Digital Format</div>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-6 text-center">
+          <div className="text-3xl font-bold text-purple-600 mb-2">∞</div>
+          <div className="text-gray-600">Instant Downloads</div>
+        </div>
+      </div>
+
+      {/* Featured Books */}
+      <BookGrid 
+        books={featuredBooks} 
+        title="Featured Books" 
+        showAddButton={true} 
+      />
+
+      {/* Call to Action */}
+      {books.length > 4 && (
+        <div className="text-center mt-12 bg-blue-50 rounded-lg p-8">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            Explore Our Complete Collection
+          </h3>
+          <p className="text-gray-600 mb-6">
+            We have {books.length} books waiting for you to discover!
+          </p>
+          <Link 
+            href="/books"
+            className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold"
+          >
+            View All Books
+          </Link>
+        </div>
+      )}
+    </Layout>
   );
 }

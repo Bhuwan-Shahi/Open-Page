@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model for authentication and customer management
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String?
+  password    String
+  role        Role     @default(CUSTOMER)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  orders      Order[]
+  reviews     Review[]
+  
+  @@map("users")
+}
+
+// Book model for storing book information
+model Book {
+  id          String   @id @default(cuid())
+  title       String
+  author      String
+  description String?
+  price       Float
+  coverImage  String?
+  pdfUrl      String   // Path to the PDF file
+  category    String?
+  isbn        String?  @unique
+  pages       Int?
+  language    String   @default("English")
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  orderItems  OrderItem[]
+  reviews     Review[]
+  
+  @@map("books")
+}
+
+// Order model for purchase tracking
+model Order {
+  id            String      @id @default(cuid())
+  userId        String
+  total         Float
+  status        OrderStatus @default(PENDING)
+  paymentMethod String?
+  paymentId     String?     // Stripe payment intent ID
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  
+  // Relations
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderItems    OrderItem[]
+  
+  @@map("orders")
+}
+
+// OrderItem model for individual books in an order
+model OrderItem {
+  id       String @id @default(cuid())
+  orderId  String
+  bookId   String
+  quantity Int    @default(1)
+  price    Float  // Price at time of purchase
+  
+  // Relations
+  order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  book     Book   @relation(fields: [bookId], references: [id])
+  
+  @@unique([orderId, bookId])
+  @@map("order_items")
+}
+
+// Review model for book reviews
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  bookId    String
+  rating    Int      // 1-5 stars
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, bookId]) // One review per user per book
+  @@map("reviews")
+}
+
+// Enums
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  COMPLETED
+  CANCELLED
+}
