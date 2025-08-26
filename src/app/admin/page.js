@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Layout from '@/components/Layout'
+import LoadingSpinner from '@/components/LoadingSpinner'
 
 export default function AdminPage() {
   const [formData, setFormData] = useState({
@@ -30,6 +31,9 @@ export default function AdminPage() {
     setMessage('')
 
     try {
+      // Add delay for testing loading state
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       const response = await fetch('/api/books', {
         method: 'POST',
         headers: {
@@ -64,22 +68,32 @@ export default function AdminPage() {
 
   return (
     <Layout className="max-w-2xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Add New Book</h1>
+      <div className="bg-white rounded-lg shadow-md p-6 relative">
+        {/* Loading Overlay */}
+        {isSubmitting && (
+          <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10 rounded-lg">
+            <LoadingSpinner size="large" text="Adding book to collection..." />
+          </div>
+        )}
+        
+        <h1 className="text-2xl font-bold mb-6" style={{ color: '#2D3748' }}>Add New Book</h1>
         
         {message && (
           <div className={`mb-4 p-4 rounded-lg ${
             message.includes('Error') 
-              ? 'bg-red-100 text-red-700 border border-red-200' 
-              : 'bg-green-100 text-green-700 border border-green-200'
-          }`}>
+              ? 'text-red-700 border' 
+              : 'text-green-700 border'
+          }`} style={{
+            backgroundColor: message.includes('Error') ? '#FEF2F2' : '#F0FDF4',
+            borderColor: message.includes('Error') ? '#F87171' : '#A8B5A2'
+          }}>
             {message}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="title" className="block text-sm font-medium mb-1" style={{ color: '#2D3748' }}>
               Title *
             </label>
             <input
@@ -208,7 +222,11 @@ export default function AdminPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full text-white py-3 px-4 rounded-md focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors hover:opacity-90"
+              style={{ 
+                backgroundColor: '#95BF47',
+                focusRingColor: '#95BF47'
+              }}
             >
               {isSubmitting ? 'Adding Book...' : 'Add Book'}
             </button>

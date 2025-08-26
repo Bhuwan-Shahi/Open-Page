@@ -1,8 +1,63 @@
 const { PrismaClient } = require('@prisma/client')
+const bcrypt = require('bcryptjs')
 
 const prisma = new PrismaClient()
 
 async function main() {
+  console.log('🌱 Starting database seeding...');
+
+  // Check if admin user already exists
+  const existingAdmin = await prisma.user.findUnique({
+    where: { email: 'shahibhuwan265@gmail.com' }
+  });
+
+  if (!existingAdmin) {
+    // Hash the admin password
+    const hashedPassword = await bcrypt.hash('admin123', 10);
+    
+    // Create admin user
+    const adminUser = await prisma.user.create({
+      data: {
+        name: 'Bhuwan Shahi',
+        email: 'shahibhuwan265@gmail.com',
+        phone: '+9779876543210',
+        password: hashedPassword,
+        role: 'ADMIN',
+        isVerified: true,
+        isActive: true
+      }
+    });
+
+    console.log('✅ Admin user created:', adminUser.email);
+  } else if (!existingAdmin.password) {
+    // Update existing admin user with password if missing
+    const hashedPassword = await bcrypt.hash('admin123', 10);
+    
+    const updatedAdmin = await prisma.user.update({
+      where: { email: 'shahibhuwan265@gmail.com' },
+      data: {
+        password: hashedPassword,
+        isVerified: true,
+        isActive: true
+      }
+    });
+    
+    console.log('✅ Admin user updated with password:', updatedAdmin.email);
+  } else {
+    console.log('ℹ️  Admin user already exists:', existingAdmin.email);
+  }
+
+  // Check if sample books exist
+  const bookCount = await prisma.book.count();
+  
+  if (bookCount > 0) {
+    console.log(`ℹ️  ${bookCount} books already exist in database`);
+    console.log('🎉 Database seeding completed!');
+    return;
+  }
+
+  console.log('📚 Creating sample books...');
+
   // Sample books data
   const books = [
     {

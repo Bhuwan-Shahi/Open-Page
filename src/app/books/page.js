@@ -10,6 +10,7 @@ export default function BooksPage() {
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searching, setSearching] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
 
@@ -26,6 +27,10 @@ export default function BooksPage() {
   const fetchBooks = async () => {
     try {
       setLoading(true);
+      
+      // Add delay for testing loading spinner (remove in production)
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       const res = await fetch('/api/books', {
         cache: 'no-store'
       });
@@ -44,7 +49,12 @@ export default function BooksPage() {
     }
   };
 
-  const filterBooks = () => {
+  const filterBooks = async () => {
+    setSearching(true);
+    
+    // Add delay for testing search loading
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
     let filtered = books;
 
     // Filter by search term
@@ -64,6 +74,7 @@ export default function BooksPage() {
     }
 
     setFilteredBooks(filtered);
+    setSearching(false);
   };
 
   const handleSearch = (term) => {
@@ -85,8 +96,8 @@ export default function BooksPage() {
   return (
     <Layout>
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">All Books</h1>
-        <p className="text-gray-600">
+        <h1 className="text-3xl font-bold mb-2" style={{ color: '#2D3748' }}>All Books</h1>
+        <p style={{ color: '#6B728E' }}>
           Browse our complete collection of digital books
         </p>
       </div>
@@ -98,7 +109,7 @@ export default function BooksPage() {
 
       {/* Results Info */}
       <div className="mb-4">
-        <p className="text-gray-600">
+        <p style={{ color: '#2D3748' }}>
           {searchTerm || selectedCategory ? (
             <>
               Showing {filteredBooks.length} results
@@ -109,7 +120,8 @@ export default function BooksPage() {
                   setSearchTerm('');
                   setSelectedCategory('');
                 }}
-                className="ml-2 text-blue-600 hover:text-blue-800 underline"
+                className="ml-2 underline hover:opacity-80 transition-opacity"
+                style={{ color: '#0066CC' }}
               >
                 Clear filters
               </button>
@@ -120,11 +132,18 @@ export default function BooksPage() {
         </p>
       </div>
 
-      <BookGrid 
-        books={filteredBooks} 
-        title=""
-        showAddButton={true}
-      />
+      {/* Search Results */}
+      {searching ? (
+        <div className="my-8">
+          <LoadingSpinner size="medium" text="Searching books..." />
+        </div>
+      ) : (
+        <BookGrid 
+          books={filteredBooks} 
+          title=""
+          showAddButton={true}
+        />
+      )}
     </Layout>
   );
 }

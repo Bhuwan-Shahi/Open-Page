@@ -4,7 +4,8 @@ import { prisma } from '@/lib/prisma'
 // GET /api/books/[id] - Get a single book
 export async function GET(request, { params }) {
   try {
-    const { id } = params
+    const resolvedParams = await params;
+    const { id } = resolvedParams;
 
     const book = await prisma.book.findUnique({
       where: {

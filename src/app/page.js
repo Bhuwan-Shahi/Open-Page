@@ -1,75 +1,98 @@
+'use client'
+
+import { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import BookGrid from '@/components/BookGrid';
-import Link from "next/link";
+import InteractiveButton from '@/components/InteractiveButton';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
-async function getBooks() {
-  try {
-    // In development, we need to use the full URL
-    const baseUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://your-domain.com' 
-      : 'http://localhost:3000';
-    
-    const res = await fetch(`${baseUrl}/api/books`, {
-      cache: 'no-store' // Always fetch fresh data
-    });
-    
-    if (!res.ok) {
-      throw new Error('Failed to fetch books');
+export default function Home() {
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  const fetchBooks = async () => {
+    try {
+      setLoading(true);
+      
+      // Add delay for testing loading spinner
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      
+      const res = await fetch('/api/books', {
+        cache: 'no-store'
+      });
+      
+      if (!res.ok) {
+        throw new Error('Failed to fetch books');
+      }
+      
+      const data = await res.json();
+      setBooks(data.books || []);
+    } catch (error) {
+      console.error('Error fetching books:', error);
+      setBooks([]);
+    } finally {
+      setLoading(false);
     }
-    
-    const data = await res.json();
-    return data.books || [];
-  } catch (error) {
-    console.error('Error fetching books:', error);
-    return [];
-  }
-}
+  };
 
-export default async function Home() {
-  const books = await getBooks();
   const featuredBooks = books.slice(0, 4); // Show only first 4 books on homepage
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4" style={{ color: '#2D3748' }}>
+            Welcome to Our Digital Bookstore
+          </h1>
+          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: '#6B728E' }}>
+            Discover and purchase amazing books in PDF format. 
+            Download instantly after purchase and build your digital library.
+          </p>
+        </div>
+        <LoadingSpinner size="large" text="Loading featured books..." />
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
       {/* Hero Section */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-4xl font-bold mb-4" style={{ color: '#2D3748' }}>
           Welcome to Our Digital Bookstore
         </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+        <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: '#6B728E' }}>
           Discover and purchase amazing books in PDF format. 
           Download instantly after purchase and build your digital library.
         </p>
         
         <div className="flex gap-4 justify-center flex-wrap">
-          <Link 
-            href="/books"
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold"
-          >
+          <InteractiveButton href="/books" variant="primary">
             Browse All Books
-          </Link>
-          <Link 
-            href="/admin"
-            className="bg-gray-600 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition-colors text-lg font-semibold"
-          >
+          </InteractiveButton>
+          <InteractiveButton href="/admin" variant="secondary">
             Admin Panel
-          </Link>
+          </InteractiveButton>
         </div>
       </div>
 
       {/* Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div className="bg-white rounded-lg shadow-md p-6 text-center">
-          <div className="text-3xl font-bold text-blue-600 mb-2">{books.length}</div>
-          <div className="text-gray-600">Books Available</div>
+        <div className="bg-white rounded-lg shadow-md p-6 text-center border-2" style={{ borderColor: '#4A90E2' }}>
+          <div className="text-3xl font-bold mb-2" style={{ color: '#4A90E2' }}>{books.length}</div>
+          <div style={{ color: '#2D3748' }}>Books Available</div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-6 text-center">
-          <div className="text-3xl font-bold text-green-600 mb-2">PDF</div>
-          <div className="text-gray-600">Digital Format</div>
+        <div className="bg-white rounded-lg shadow-md p-6 text-center border-2" style={{ borderColor: '#6C757D' }}>
+          <div className="text-3xl font-bold mb-2" style={{ color: '#6C757D' }}>PDF</div>
+          <div style={{ color: '#2D3748' }}>Digital Format</div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-6 text-center">
-          <div className="text-3xl font-bold text-purple-600 mb-2">∞</div>
-          <div className="text-gray-600">Instant Downloads</div>
+        <div className="bg-white rounded-lg shadow-md p-6 text-center border-2" style={{ borderColor: '#F5A623' }}>
+          <div className="text-3xl font-bold mb-2" style={{ color: '#F5A623' }}>∞</div>
+          <div style={{ color: '#2D3748' }}>Instant Downloads</div>
         </div>
       </div>
 
@@ -82,19 +105,16 @@ export default async function Home() {
 
       {/* Call to Action */}
       {books.length > 4 && (
-        <div className="text-center mt-12 bg-blue-50 rounded-lg p-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+        <div className="text-center mt-12 rounded-lg p-8 border-2" style={{ backgroundColor: '#F0F8FF', borderColor: '#4A90E2' }}>
+          <h3 className="text-2xl font-bold mb-4" style={{ color: '#2D3748' }}>
             Explore Our Complete Collection
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="mb-6" style={{ color: '#4A90E2' }}>
             We have {books.length} books waiting for you to discover!
           </p>
-          <Link 
-            href="/books"
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors text-lg font-semibold"
-          >
+          <InteractiveButton href="/books" variant="primary">
             View All Books
-          </Link>
+          </InteractiveButton>
         </div>
       )}
     </Layout>

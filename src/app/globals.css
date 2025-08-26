@@ -2,7 +2,17 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1A1A1A;
+  
+  /* Shopify-inspired color palette */
+  --shopify-green: #95BF47;
+  --shopify-blue: #0066CC;
+  --shopify-teal: #2E6B47;
+  --shopify-purple: #6B4E9B;
+  --shopify-cool-blue: #4B5EAA;
+  --winter-accent: #E6F0FA;
+  --neutral-bg: #F5F5F5;
+  --dark-gray: #1A1A1A;
 }
 
 @theme inline {
@@ -10,6 +20,13 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  /* Custom Shopify colors */
+  --color-shopify-green: var(--shopify-green);
+  --color-shopify-blue: var(--shopify-blue);
+  --color-shopify-teal: var(--shopify-teal);
+  --color-winter-accent: var(--winter-accent);
+  --color-neutral-bg: var(--neutral-bg);
 }
 
 @media (prefers-color-scheme: dark) {

@@ -12,19 +12,34 @@ datasource db {
 
 // User model for authentication and customer management
 model User {
-  id          String   @id @default(cuid())
-  email       String   @unique
-  name        String?
-  password    String
-  role        Role     @default(CUSTOMER)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String   @unique
+  password  String?  // Optional for OTP-based auth
+  role      UserRole @default(USER)
+  isActive  Boolean  @default(true)
+  isVerified Boolean @default(false)
   
+  // OTP fields
+  otpCode      String?
+  otpExpiresAt DateTime?
+  otpAttempts  Int       @default(0)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relations
-  orders      Order[]
-  reviews     Review[]
-  
+  orders  Order[]
+  reviews Review[]
+
   @@map("users")
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 // Book model for storing book information
