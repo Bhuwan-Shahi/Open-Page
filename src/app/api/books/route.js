@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { withAdminAuth } from '@/lib/authMiddleware'
 
-// GET /api/books - Get all books
+// GET /api/books - Get all books (public)
 export async function GET() {
   try {
     const books = await prisma.book.findMany({
@@ -23,8 +24,8 @@ export async function GET() {
   }
 }
 
-// POST /api/books - Create a new book (Admin only for now)
-export async function POST(request) {
+// POST /api/books - Create a new book (Admin only)
+async function createBook(request) {
   try {
     const body = await request.json()
     const { title, author, description, price, category, isbn, pages, language } = body
@@ -60,3 +61,6 @@ export async function POST(request) {
     )
   }
 }
+
+// Apply admin authentication to POST method
+export const POST = withAdminAuth(createBook)

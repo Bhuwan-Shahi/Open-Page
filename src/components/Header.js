@@ -29,9 +29,11 @@ export default function Header() {
             <Link href="/books" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
               All Books
             </Link>
-            <Link href="/admin" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
-              Admin
-            </Link>
+            {user && user.role === 'ADMIN' && (
+              <Link href="/admin" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
+                Admin
+              </Link>
+            )}
             <Link href="/cart" className="text-lg font-medium transition-colors hover:opacity-80 relative px-3 py-2 rounded-lg" style={{ backgroundColor: '#4A90E2', color: 'white' }}>
               Cart
               {/* Cart count badge */}

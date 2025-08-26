@@ -31,8 +31,9 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  orders  Order[]
-  reviews Review[]
+  orders    Order[]
+  reviews   Review[]
+  cartItems CartItem[]
 
   @@map("users")
 }
@@ -62,6 +63,7 @@ model Book {
   // Relations
   orderItems  OrderItem[]
   reviews     Review[]
+  cartItems   CartItem[]
   
   @@map("books")
 }
@@ -116,6 +118,23 @@ model Review {
   
   @@unique([userId, bookId]) // One review per user per book
   @@map("reviews")
+}
+
+// Cart Item model for shopping cart
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  bookId    String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, bookId]) // One item per user per book in cart
+  @@map("cart_items")
 }
 
 // Enums

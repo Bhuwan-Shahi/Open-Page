@@ -1,15 +1,41 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Layout from '@/components/Layout';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import InteractiveButton from '@/components/InteractiveButton';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 import Image from 'next/image';
 
 export default function CartPage() {
   const { cartItems, isLoading, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
+  const { user, loading: authLoading } = useAuth();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login?redirect=/cart');
+    }
+  }, [user, authLoading, router]);
+
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <Layout>
+        <div className="flex justify-center items-center min-h-screen">
+          <LoadingSpinner />
+        </div>
+      </Layout>
+    );
+  }
+
+  // Don't render cart if user is not authenticated
+  if (!user) {
+    return null;
+  }
 
   const handleCheckout = async () => {
     setIsCheckingOut(true);

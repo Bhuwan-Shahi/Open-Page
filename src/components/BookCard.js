@@ -1,15 +1,26 @@
 'use client'
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import InteractiveButton from './InteractiveButton';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function BookCard({ book }) {
   const { addToCart, isLoading } = useCart();
+  const { user } = useAuth();
+  const router = useRouter();
 
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    if (!user) {
+      // Redirect to login if user is not authenticated
+      router.push(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+    
     await addToCart(book);
   };
 
@@ -62,7 +73,7 @@ export default function BookCard({ book }) {
             onMouseEnter={(e) => !isLoading && (e.target.style.backgroundColor = '#218838')}
             onMouseLeave={(e) => !isLoading && (e.target.style.backgroundColor = '#28A745')}
           >
-            {isLoading ? 'Adding...' : 'Add to Cart'}
+            {isLoading ? 'Adding...' : user ? 'Add to Cart' : 'Login to Buy'}
           </button>
         </div>
       </div>

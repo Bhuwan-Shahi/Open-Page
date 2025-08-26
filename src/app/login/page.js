@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -16,7 +16,10 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { login } = useAuth()
+
+  const redirectPath = searchParams.get('redirect') || '/'
 
   const handleInputChange = (e) => {
     setFormData({
@@ -50,7 +53,7 @@ export default function LoginPage() {
           login(data.user)
           setSuccess('Login successful!')
           setTimeout(() => {
-            router.push('/')
+            router.push(redirectPath)
           }, 1000)
         }
       } else {
@@ -86,7 +89,7 @@ export default function LoginPage() {
         login(data.user)
         setSuccess('Login successful!')
         setTimeout(() => {
-          router.push('/')
+          router.push(redirectPath)
         }, 1000)
       } else {
         setError(data.error || 'OTP verification failed')
