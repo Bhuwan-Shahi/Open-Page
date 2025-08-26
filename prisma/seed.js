@@ -58,13 +58,13 @@ async function main() {
 
   console.log('📚 Creating sample books...');
 
-  // Sample books data
+  // Sample books data with Nepali prices (1 USD ≈ 133 NPR)
   const books = [
     {
       title: "The Great Gatsby",
       author: "F. Scott Fitzgerald",
       description: "A classic American novel set in the Jazz Age, exploring themes of wealth, love, and the American Dream.",
-      price: 12.99,
+      price: 1699.00,
       category: "Classic Literature",
       isbn: "978-0-7432-7356-5",
       pages: 180,
@@ -75,7 +75,7 @@ async function main() {
       title: "To Kill a Mockingbird",
       author: "Harper Lee",
       description: "A gripping tale of racial injustice and childhood innocence in the American South.",
-      price: 14.99,
+      price: 1999.00,
       category: "Classic Literature",
       isbn: "978-0-06-112008-4",
       pages: 324,
@@ -86,7 +86,7 @@ async function main() {
       title: "1984",
       author: "George Orwell",
       description: "A dystopian social science fiction novel about totalitarian control and surveillance.",
-      price: 13.99,
+      price: 1859.00,
       category: "Science Fiction",
       isbn: "978-0-452-28423-4",
       pages: 328,
@@ -97,7 +97,7 @@ async function main() {
       title: "The Catcher in the Rye",
       author: "J.D. Salinger",
       description: "A controversial novel about teenage rebellion and alienation in post-war America.",
-      price: 11.99,
+      price: 1599.00,
       category: "Classic Literature",
       isbn: "978-0-316-76948-0",
       pages: 277,
@@ -108,7 +108,7 @@ async function main() {
       title: "Dune",
       author: "Frank Herbert",
       description: "An epic science fiction novel set on the desert planet Arrakis.",
-      price: 16.99,
+      price: 2259.00,
       category: "Science Fiction",
       isbn: "978-0-441-17271-9",
       pages: 688,

@@ -52,9 +52,7 @@ export default function LoginPage() {
         } else {
           login(data.user)
           setSuccess('Login successful!')
-          setTimeout(() => {
-            router.push(redirectPath)
-          }, 1000)
+          router.push(redirectPath)
         }
       } else {
         setError(data.error || 'Login failed')
@@ -88,9 +86,7 @@ export default function LoginPage() {
       if (response.ok) {
         login(data.user)
         setSuccess('Login successful!')
-        setTimeout(() => {
-          router.push(redirectPath)
-        }, 1000)
+        router.push(redirectPath)
       } else {
         setError(data.error || 'OTP verification failed')
       }

@@ -5,12 +5,20 @@ import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Header() {
-  const { getTotalItems } = useCart();
+  const { getTotalItems, clearCart } = useCart();
   const { user, logout, loading } = useAuth();
   const itemCount = getTotalItems();
 
   const handleLogout = async () => {
-    await logout();
+    try {
+      // Clear cart before logging out
+      await clearCart();
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force redirect even if logout fails
+      window.location.href = '/';
+    }
   };
 
   return (

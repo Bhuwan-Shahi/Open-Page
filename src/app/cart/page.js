@@ -40,9 +40,6 @@ export default function CartPage() {
   const handleCheckout = async () => {
     setIsCheckingOut(true);
     
-    // Simulate checkout process with delay
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
     // In a real app, this would process the payment
     alert('Checkout completed! (This is a demo)');
     clearCart();
@@ -123,7 +120,7 @@ export default function CartPage() {
                     </h3>
                     <p className="text-sm" style={{ color: '#6B728E' }}>by {item.author}</p>
                     <p className="font-bold" style={{ color: '#F5A623' }}>
-                      ${item.price}
+                      Rs. {item.price}
                     </p>
                   </div>
 
@@ -173,16 +170,16 @@ export default function CartPage() {
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
-                  <span>${getTotalPrice().toFixed(2)}</span>
+                  <span>Rs. {getTotalPrice().toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Tax:</span>
-                  <span>$0.00</span>
+                  <span>Rs. 0.00</span>
                 </div>
                 <div className="border-t pt-2" style={{ borderColor: '#D1D5DB' }}>
                   <div className="flex justify-between font-bold">
                     <span>Total:</span>
-                    <span style={{ color: '#F5A623' }}>${getTotalPrice().toFixed(2)}</span>
+                    <span style={{ color: '#F5A623' }}>Rs. {getTotalPrice().toFixed(2)}</span>
                   </div>
                 </div>
               </div>

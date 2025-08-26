@@ -57,9 +57,6 @@ export default function AdminPage() {
     setMessage('')
 
     try {
-      // Add delay for testing loading state
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
       const response = await fetch('/api/books', {
         method: 'POST',
         headers: {
@@ -129,7 +126,7 @@ export default function AdminPage() {
               value={formData.title}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
 
@@ -144,7 +141,7 @@ export default function AdminPage() {
               value={formData.author}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
 
@@ -158,14 +155,14 @@ export default function AdminPage() {
               value={formData.description}
               onChange={handleChange}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                Price ($) *
+                Price (Rs.) *
               </label>
               <input
                 type="number"
@@ -175,7 +172,7 @@ export default function AdminPage() {
                 onChange={handleChange}
                 step="0.01"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               />
             </div>
 
@@ -190,7 +187,7 @@ export default function AdminPage() {
                 value={formData.category}
                 onChange={handleChange}
                 placeholder="e.g., Fiction, Science, Business"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               />
             </div>
           </div>
@@ -200,13 +197,14 @@ export default function AdminPage() {
               <label htmlFor="isbn" className="block text-sm font-medium text-gray-700 mb-1">
                 ISBN
               </label>
-              <input
+                            <input
                 type="text"
                 id="isbn"
                 name="isbn"
                 value={formData.isbn}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="978-3-16-148410-0"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               />
             </div>
 
@@ -214,13 +212,14 @@ export default function AdminPage() {
               <label htmlFor="pages" className="block text-sm font-medium text-gray-700 mb-1">
                 Pages
               </label>
-              <input
+                            <input
                 type="number"
                 id="pages"
                 name="pages"
                 value={formData.pages}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                min="1"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               />
             </div>
           </div>
@@ -234,7 +233,7 @@ export default function AdminPage() {
               name="language"
               value={formData.language}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             >
               <option value="English">English</option>
               <option value="Spanish">Spanish</option>

@@ -115,7 +115,7 @@ export default function BookDetailPage({ params }) {
 
             <div className="mb-6">
               <span className="text-4xl font-bold" style={{ color: '#6B728E' }}>
-                ${book.price}
+                Rs. {book.price}
               </span>
             </div>
 

@@ -28,9 +28,6 @@ export default function BooksPage() {
     try {
       setLoading(true);
       
-      // Add delay for testing loading spinner (remove in production)
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
       const res = await fetch('/api/books', {
         cache: 'no-store'
       });
@@ -51,9 +48,6 @@ export default function BooksPage() {
 
   const filterBooks = async () => {
     setSearching(true);
-    
-    // Add delay for testing search loading
-    await new Promise(resolve => setTimeout(resolve, 500));
     
     let filtered = books;
 

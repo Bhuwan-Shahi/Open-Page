@@ -54,7 +54,7 @@ export default function BookCard({ book }) {
         {/* Price and Actions */}
         <div className="flex items-center justify-between mb-3">
           <span className="text-xl font-bold" style={{ color: '#F5A623' }}>
-            ${book.price}
+            Rs. {book.price}
           </span>
         </div>
         <div className="flex gap-2">

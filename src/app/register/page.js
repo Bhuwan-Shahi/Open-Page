@@ -99,9 +99,7 @@ export default function RegisterPage() {
 
       if (response.ok) {
         setSuccess('Account verified successfully! You can now login.')
-        setTimeout(() => {
-          router.push('/login')
-        }, 2000)
+        router.push('/login')
       } else {
         setError(data.error || 'OTP verification failed')
       }

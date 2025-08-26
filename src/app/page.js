@@ -5,10 +5,12 @@ import Layout from '@/components/Layout';
 import BookGrid from '@/components/BookGrid';
 import InteractiveButton from '@/components/InteractiveButton';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Home() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchBooks();
@@ -17,9 +19,6 @@ export default function Home() {
   const fetchBooks = async () => {
     try {
       setLoading(true);
-      
-      // Add delay for testing loading spinner
-      await new Promise(resolve => setTimeout(resolve, 1200));
       
       const res = await fetch('/api/books', {
         cache: 'no-store'
@@ -74,9 +73,11 @@ export default function Home() {
           <InteractiveButton href="/books" variant="primary">
             Browse All Books
           </InteractiveButton>
-          <InteractiveButton href="/admin" variant="secondary">
-            Admin Panel
-          </InteractiveButton>
+          {user && user.role === 'ADMIN' && (
+            <InteractiveButton href="/admin" variant="secondary">
+              Admin Panel
+            </InteractiveButton>
+          )}
         </div>
       </div>
 

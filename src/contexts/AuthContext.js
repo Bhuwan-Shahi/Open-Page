@@ -14,13 +14,21 @@ export function AuthProvider({ children }) {
 
   const checkAuthStatus = async () => {
     try {
-      const response = await fetch('/api/auth/me')
+      const response = await fetch('/api/auth/me', {
+        credentials: 'same-origin', // Ensure cookies are sent
+        cache: 'no-store' // Don't cache this request
+      })
+      
       if (response.ok) {
         const userData = await response.json()
         setUser(userData.user)
+      } else {
+        // If response is not ok, user is not authenticated
+        setUser(null)
       }
     } catch (error) {
       console.error('Auth check failed:', error)
+      setUser(null)
     } finally {
       setLoading(false)
     }
@@ -32,10 +40,23 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' })
+      // Clear user state immediately
       setUser(null)
+      
+      const response = await fetch('/api/auth/logout', { 
+        method: 'POST',
+        credentials: 'same-origin' // Ensure cookies are sent
+      })
+      
+      if (response.ok) {
+        window.location.href = '/' // Redirect to home page after logout
+      } else {
+        console.error('Logout request failed')
+        window.location.href = '/'
+      }
     } catch (error) {
       console.error('Logout failed:', error)
+      window.location.href = '/'
     }
   }
 
