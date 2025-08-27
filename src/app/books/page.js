@@ -5,8 +5,10 @@ import Layout from '@/components/Layout';
 import BookGrid from '@/components/BookGrid';
 import SearchBar from '@/components/SearchBar';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function BooksPage() {
+  const { user } = useAuth();
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -136,6 +138,7 @@ export default function BooksPage() {
           books={filteredBooks} 
           title=""
           showAddButton={true}
+          user={user}
         />
       )}
     </Layout>

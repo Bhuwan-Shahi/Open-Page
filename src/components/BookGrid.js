@@ -1,13 +1,13 @@
 import BookCard from './BookCard';
 import Link from 'next/link';
 
-export default function BookGrid({ books, title = "Books", showAddButton = false }) {
+export default function BookGrid({ books, title = "Books", showAddButton = false, user = null }) {
   return (
     <div className="w-full">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold" style={{ color: '#2D3748' }}>{title}</h2>
-        {showAddButton && (
+        {showAddButton && user && user.role === 'ADMIN' && (
           <Link 
             href="/admin"
             className="px-4 py-2 rounded-lg transition-colors text-white"

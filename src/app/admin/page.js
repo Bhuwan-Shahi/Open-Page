@@ -17,10 +17,14 @@ export default function AdminPage() {
     category: '',
     isbn: '',
     pages: '',
-    language: 'English'
+    language: 'English',
+    pdfUrl: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [message, setMessage] = useState('')
+  const [pdfFile, setPdfFile] = useState(null)
+  const [uploadMethod, setUploadMethod] = useState('url') // 'url' or 'file'
+  const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     if (!authLoading && (!user || user.role !== 'ADMIN')) {
@@ -57,12 +61,47 @@ export default function AdminPage() {
     setMessage('')
 
     try {
+      let finalPdfUrl = formData.pdfUrl;
+
+      // If uploading a file, upload it first
+      if (uploadMethod === 'file' && pdfFile) {
+        setIsUploading(true);
+        
+        const uploadFormData = new FormData();
+        uploadFormData.append('file', pdfFile);
+
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          body: uploadFormData,
+        });
+
+        const uploadData = await uploadResponse.json();
+
+        if (uploadResponse.ok) {
+          finalPdfUrl = uploadData.fileUrl;
+        } else {
+          setMessage(`Upload Error: ${uploadData.error}`);
+          return;
+        }
+        
+        setIsUploading(false);
+      }
+
+      // Validate that we have a PDF URL (either from upload or manual entry)
+      if (!finalPdfUrl) {
+        setMessage('Please provide a PDF URL or upload a PDF file');
+        return;
+      }
+
       const response = await fetch('/api/books', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          pdfUrl: finalPdfUrl
+        })
       })
 
       const data = await response.json()
@@ -77,8 +116,11 @@ export default function AdminPage() {
           category: '',
           isbn: '',
           pages: '',
-          language: 'English'
+          language: 'English',
+          pdfUrl: ''
         })
+        setPdfFile(null)
+        setUploadMethod('url')
       } else {
         setMessage(`Error: ${data.error}`)
       }
@@ -86,6 +128,7 @@ export default function AdminPage() {
       setMessage('Error: Failed to add book')
     } finally {
       setIsSubmitting(false)
+      setIsUploading(false)
     }
   }
 
@@ -243,27 +286,93 @@ export default function AdminPage() {
             </select>
           </div>
 
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              PDF Source *
+            </label>
+            
+            {/* Upload Method Toggle */}
+            <div className="flex space-x-4 mb-4">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="uploadMethod"
+                  value="url"
+                  checked={uploadMethod === 'url'}
+                  onChange={(e) => setUploadMethod(e.target.value)}
+                  className="mr-2"
+                />
+                <span className="text-sm">Use URL</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="uploadMethod"
+                  value="file"
+                  checked={uploadMethod === 'file'}
+                  onChange={(e) => setUploadMethod(e.target.value)}
+                  className="mr-2"
+                />
+                <span className="text-sm">Upload File</span>
+              </label>
+            </div>
+
+            {/* URL Input */}
+            {uploadMethod === 'url' && (
+              <div>
+                <input
+                  type="url"
+                  id="pdfUrl"
+                  name="pdfUrl"
+                  value={formData.pdfUrl}
+                  onChange={handleChange}
+                  placeholder="https://example.com/book.pdf"
+                  required={uploadMethod === 'url'}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  Enter the URL of the PDF file from the web.
+                </p>
+              </div>
+            )}
+
+            {/* File Upload */}
+            {uploadMethod === 'file' && (
+              <div>
+                <input
+                  type="file"
+                  id="pdfFile"
+                  accept=".pdf,application/pdf"
+                  onChange={(e) => setPdfFile(e.target.files[0])}
+                  required={uploadMethod === 'file'}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  Select a PDF file from your computer (max 10MB). Example: /home/bhuwan/downloads/thinking.pdf
+                </p>
+                {pdfFile && (
+                  <p className="text-sm text-green-600 mt-1">
+                    Selected: {pdfFile.name} ({(pdfFile.size / 1024 / 1024).toFixed(2)} MB)
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
           <div className="pt-4">
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isUploading}
               className="w-full text-white py-3 px-4 rounded-md focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors hover:opacity-90"
               style={{ 
                 backgroundColor: '#95BF47',
                 focusRingColor: '#95BF47'
               }}
             >
-              {isSubmitting ? 'Adding Book...' : 'Add Book'}
+              {isUploading ? 'Uploading PDF...' : (isSubmitting ? 'Adding Book...' : 'Add Book')}
             </button>
           </div>
         </form>
-
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <p className="text-sm text-gray-600">
-            <strong>Note:</strong> After adding a book, you'll need to upload the PDF file separately. 
-            We'll add PDF upload functionality in the next step.
-          </p>
-        </div>
       </div>
     </Layout>
   )

@@ -49,7 +49,7 @@ export async function GET(request, { params }) {
 // PUT /api/books/[id] - Update a book (Admin only)
 export async function PUT(request, { params }) {
   try {
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
     
     const book = await prisma.book.update({
@@ -70,7 +70,7 @@ export async function PUT(request, { params }) {
 // DELETE /api/books/[id] - Delete a book (Admin only)
 export async function DELETE(request, { params }) {
   try {
-    const { id } = params
+    const { id } = await params
 
     // Soft delete by setting isActive to false
     const book = await prisma.book.update({

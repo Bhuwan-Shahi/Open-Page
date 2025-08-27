@@ -28,12 +28,20 @@ export async function GET() {
 async function createBook(request) {
   try {
     const body = await request.json()
-    const { title, author, description, price, category, isbn, pages, language } = body
+    const { title, author, description, price, category, isbn, pages, language, pdfUrl } = body
 
     // Basic validation
     if (!title || !author || !price) {
       return NextResponse.json(
         { error: 'Title, author, and price are required' },
+        { status: 400 }
+      )
+    }
+
+    // PDF URL validation
+    if (!pdfUrl || pdfUrl.trim() === '') {
+      return NextResponse.json(
+        { error: 'PDF URL is required' },
         { status: 400 }
       )
     }
@@ -48,7 +56,7 @@ async function createBook(request) {
         isbn,
         pages: pages ? parseInt(pages) : null,
         language: language || 'English',
-        pdfUrl: '', // Will be updated when PDF is uploaded
+        pdfUrl: pdfUrl,
       }
     })
 

@@ -69,7 +69,7 @@ async function main() {
       isbn: "978-0-7432-7356-5",
       pages: 180,
       language: "English",
-      pdfUrl: "/sample-books/great-gatsby.pdf"
+      pdfUrl: "https://www.gutenberg.org/files/64317/64317-pdf.pdf"
     },
     {
       title: "To Kill a Mockingbird",
@@ -80,7 +80,7 @@ async function main() {
       isbn: "978-0-06-112008-4",
       pages: 324,
       language: "English",
-      pdfUrl: "/sample-books/to-kill-mockingbird.pdf"
+      pdfUrl: "https://www.gutenberg.org/files/1342/1342-pdf.pdf"
     },
     {
       title: "1984",
@@ -91,7 +91,7 @@ async function main() {
       isbn: "978-0-452-28423-4",
       pages: 328,
       language: "English",
-      pdfUrl: "/sample-books/1984.pdf"
+      pdfUrl: "https://www.gutenberg.org/files/74/74-pdf.pdf"
     },
     {
       title: "The Catcher in the Rye",
@@ -102,7 +102,7 @@ async function main() {
       isbn: "978-0-316-76948-0",
       pages: 277,
       language: "English",
-      pdfUrl: "/sample-books/catcher-in-rye.pdf"
+      pdfUrl: "https://www.gutenberg.org/files/11/11-pdf.pdf"
     },
     {
       title: "Dune",
@@ -113,7 +113,7 @@ async function main() {
       isbn: "978-0-441-17271-9",
       pages: 688,
       language: "English",
-      pdfUrl: "/sample-books/dune.pdf"
+      pdfUrl: "https://www.gutenberg.org/files/84/84-pdf.pdf"
     }
   ]
 

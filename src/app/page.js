@@ -102,6 +102,7 @@ export default function Home() {
         books={featuredBooks} 
         title="Featured Books" 
         showAddButton={true} 
+        user={user}
       />
 
       {/* Call to Action */}

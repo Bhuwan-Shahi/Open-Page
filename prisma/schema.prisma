@@ -76,6 +76,9 @@ model Order {
   status        OrderStatus @default(PENDING)
   paymentMethod String?
   paymentId     String?     // Stripe payment intent ID
+  qrCode        String?     // QR code for payment
+  paymentUrl    String?     // Payment URL for QR code
+  expiresAt     DateTime?   // Payment expiration time
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   
