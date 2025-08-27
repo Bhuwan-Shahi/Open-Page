@@ -21,6 +21,42 @@ export default function CartPage() {
     }
   }, [user, authLoading, router]);
 
+  const buyNow = async (book) => {
+    if (!user) {
+      alert('Please login to purchase books');
+      return;
+    }
+
+    try {
+      setIsCheckingOut(true);
+      const response = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          bookId: book.id,
+          quantity: 1
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Remove item from cart after successful order creation
+        removeFromCart(book.id);
+        // Redirect to payment page
+        router.push(`/payment/${data.order.id}`);
+      } else {
+        alert('Failed to create order. Please try again.');
+      }
+    } catch (error) {
+      console.error('Purchase error:', error);
+      alert('An error occurred during purchase. Please try again.');
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
+
   // Show loading while checking authentication
   if (authLoading) {
     return (
@@ -36,15 +72,6 @@ export default function CartPage() {
   if (!user) {
     return null;
   }
-
-  const handleCheckout = async () => {
-    setIsCheckingOut(true);
-    
-    // In a real app, this would process the payment
-    alert('Checkout completed! (This is a demo)');
-    clearCart();
-    setIsCheckingOut(false);
-  };
 
   if (cartItems.length === 0) {
     return (
@@ -122,26 +149,23 @@ export default function CartPage() {
                     <p className="font-bold" style={{ color: '#F5A623' }}>
                       Rs. {item.price}
                     </p>
+                    <p className="text-xs mt-1" style={{ color: '#9CA3AF' }}>PDF Download</p>
                   </div>
 
-                  {/* Quantity Controls */}
+                  {/* Buy Now Button */}
                   <div className="flex items-center space-x-2">
                     <button
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      onClick={() => buyNow(item)}
                       disabled={isLoading}
-                      className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-100 disabled:opacity-50"
-                      style={{ borderColor: '#D1D5DB' }}
+                      className="px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50"
+                      style={{ 
+                        backgroundColor: '#4A90E2', 
+                        color: 'white'
+                      }}
+                      onMouseEnter={(e) => !isLoading && (e.target.style.backgroundColor = '#357ABD')}
+                      onMouseLeave={(e) => !isLoading && (e.target.style.backgroundColor = '#4A90E2')}
                     >
-                      -
-                    </button>
-                    <span className="w-8 text-center">{item.quantity}</span>
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      disabled={isLoading}
-                      className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-gray-100 disabled:opacity-50"
-                      style={{ borderColor: '#D1D5DB' }}
-                    >
-                      +
+                      Buy Now
                     </button>
                   </div>
 
@@ -160,49 +184,53 @@ export default function CartPage() {
             ))}
           </div>
 
-          {/* Order Summary */}
+          {/* Cart Summary */}
           <div className="lg:col-span-1">
             <div className="border border-gray-200 rounded-lg p-6 bg-white sticky top-4">
               <h3 className="text-lg font-semibold mb-4" style={{ color: '#2D3748' }}>
-                Order Summary
+                Cart Summary
               </h3>
               
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between">
-                  <span>Subtotal:</span>
-                  <span>Rs. {getTotalPrice().toFixed(2)}</span>
+                  <span style={{ color: '#6B7280' }}>Items in cart:</span>
+                  <span style={{ color: '#1F2937' }}>{cartItems.length}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Tax:</span>
-                  <span>Rs. 0.00</span>
-                </div>
-                <div className="border-t pt-2" style={{ borderColor: '#D1D5DB' }}>
-                  <div className="flex justify-between font-bold">
-                    <span>Total:</span>
-                    <span style={{ color: '#F5A623' }}>Rs. {getTotalPrice().toFixed(2)}</span>
-                  </div>
+                  <span style={{ color: '#6B7280' }}>Total value:</span>
+                  <span style={{ color: '#F59E0B' }}>Rs. {getTotalPrice().toFixed(2)}</span>
                 </div>
               </div>
 
-              <button
-                onClick={handleCheckout}
-                disabled={isLoading || isCheckingOut}
-                className="w-full py-3 px-4 rounded-lg font-semibold transition-colors disabled:opacity-50"
-                style={{ 
-                  backgroundColor: '#4A90E2', 
-                  color: 'white',
-                  cursor: isLoading || isCheckingOut ? 'not-allowed' : 'pointer'
-                }}
-                onMouseEnter={(e) => !isLoading && !isCheckingOut && (e.target.style.backgroundColor = '#357ABD')}
-                onMouseLeave={(e) => !isLoading && !isCheckingOut && (e.target.style.backgroundColor = '#4A90E2')}
-              >
-                {isCheckingOut ? 'Processing...' : 'Proceed to Checkout'}
-              </button>
+              <div className="space-y-3">
+                <div className="text-center">
+                  <button
+                    onClick={() => router.push('/books')}
+                    className="w-full py-3 px-4 rounded-lg font-semibold transition-colors border-2"
+                    style={{ 
+                      borderColor: '#6B7280', 
+                      color: '#6B7280',
+                      backgroundColor: 'transparent'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = '#6B7280';
+                      e.target.style.color = 'white';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = 'transparent';
+                      e.target.style.color = '#6B7280';
+                    }}
+                  >
+                    Continue Shopping
+                  </button>
+                </div>
 
-              <div className="mt-4 text-center">
-                <InteractiveButton href="/books" variant="secondary" className="w-full">
-                  Continue Shopping
-                </InteractiveButton>
+                <div className="p-4 rounded-lg" style={{ backgroundColor: '#EBF8FF', border: '1px solid #3B82F6' }}>
+                  <h4 className="font-semibold mb-2" style={{ color: '#1E40AF' }}>💡 Quick Purchase</h4>
+                  <p className="text-sm" style={{ color: '#1E40AF' }}>
+                    Click "Buy Now" on any book to purchase it individually with our secure QR payment system.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

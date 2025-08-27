@@ -119,30 +119,62 @@ export default function PaymentPage() {
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2" style={{ color: '#1F2937' }}>Complete Payment</h1>
-            <p style={{ color: '#6B7280' }}>Scan the QR code below to pay for your book</p>
+            <p style={{ color: '#6B7280' }}>
+              Scan the QR code below to pay for your {order.orderItems?.length > 1 ? 'books' : 'book'}
+            </p>
           </div>
 
           {/* Order Details */}
           <div className="bg-gray-50 rounded-lg p-6 mb-8">
             <h2 className="text-xl font-semibold mb-4" style={{ color: '#1F2937' }}>Order Details</h2>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span style={{ color: '#6B7280' }}>Book:</span>
-                <span className="font-medium" style={{ color: '#1F2937' }}>{order.book?.title}</span>
+            
+            {/* Multiple items display */}
+            {order.orderItems && order.orderItems.length > 1 ? (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  {order.orderItems.map((item, index) => (
+                    <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                      <div>
+                        <span className="font-medium" style={{ color: '#1F2937' }}>{item.book?.title}</span>
+                        <br />
+                        <span className="text-sm" style={{ color: '#6B7280' }}>by {item.book?.author}</span>
+                      </div>
+                      <span className="font-semibold" style={{ color: '#059669' }}>NPR {item.price}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="border-t pt-2">
+                  <div className="flex justify-between">
+                    <span style={{ color: '#6B7280' }}>Total Amount:</span>
+                    <span className="font-bold" style={{ color: '#059669' }}>NPR {order.total}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span style={{ color: '#6B7280' }}>Order ID:</span>
+                    <span className="font-mono text-sm" style={{ color: '#1F2937' }}>{order.id}</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span style={{ color: '#6B7280' }}>Author:</span>
-                <span className="font-medium" style={{ color: '#1F2937' }}>{order.book?.author}</span>
+            ) : (
+              /* Single item display */
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span style={{ color: '#6B7280' }}>Book:</span>
+                  <span className="font-medium" style={{ color: '#1F2937' }}>{order.book?.title || order.orderItems?.[0]?.book?.title}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span style={{ color: '#6B7280' }}>Author:</span>
+                  <span className="font-medium" style={{ color: '#1F2937' }}>{order.book?.author || order.orderItems?.[0]?.book?.author}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span style={{ color: '#6B7280' }}>Price:</span>
+                  <span className="font-bold" style={{ color: '#059669' }}>NPR {order.total}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span style={{ color: '#6B7280' }}>Order ID:</span>
+                  <span className="font-mono text-sm" style={{ color: '#1F2937' }}>{order.id}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span style={{ color: '#6B7280' }}>Price:</span>
-                <span className="font-bold" style={{ color: '#059669' }}>Rs. {order.total}</span>
-              </div>
-              <div className="flex justify-between">
-                <span style={{ color: '#6B7280' }}>Order ID:</span>
-                <span className="font-mono text-sm" style={{ color: '#1F2937' }}>{order.id}</span>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Timer */}
@@ -160,31 +192,95 @@ export default function PaymentPage() {
           {/* QR Code */}
           <div className="text-center mb-8">
             <div className="inline-block bg-white p-4 rounded-lg shadow-md">
-              <img 
-                src={order.qrCode} 
-                alt="Payment QR Code" 
-                className="w-64 h-64 mx-auto"
-              />
+              {/* Official Siddhartha Bank QR Code */}
+              <div className="mb-4">
+                <img 
+                  src="/siddartha-qr.png" 
+                  alt="Siddhartha Bank QR Code" 
+                  className="w-64 h-64 mx-auto object-contain"
+                />
+              </div>
+              
+              {/* Amount Alert */}
+              <div className="bg-red-100 border border-red-300 rounded-lg p-3 mb-2">
+                <p className="text-red-800 font-bold text-lg">
+                  ⚠️ ENTER AMOUNT: NPR {order.total}
+                </p>
+                <p className="text-red-700 text-sm">
+                  After scanning, manually enter the amount above
+                </p>
+              </div>
+              
+              {/* Reference Info */}
+              <div className="bg-blue-100 border border-blue-300 rounded-lg p-2">
+                <p className="text-blue-800 text-sm">
+                  <strong>Reference:</strong> {order.id}
+                </p>
+                <p className="text-blue-700 text-xs">
+                  Add this reference in remarks/message
+                </p>
+              </div>
             </div>
             <p className="text-sm mt-4" style={{ color: '#6B7280' }}>
-              Scan this QR code with your payment app
+              Scan with Siddhartha Bank app or any mobile banking app
             </p>
           </div>
 
           {/* Payment Instructions */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-            <h3 className="text-lg font-semibold mb-3" style={{ color: '#1E3A8A' }}>Payment Instructions</h3>
-            <ol className="space-y-2" style={{ color: '#1E40AF' }}>
-              <li>1. Open your preferred UPI payment app (PhonePe, Paytm, GPay, etc.)</li>
-              <li>2. Scan the QR code above</li>
-              <li>3. Verify the amount: Rs. {order.total}</li>
-              <li>4. Complete the payment</li>
-              <li>5. You'll receive access to the PDF immediately after payment</li>
-            </ol>
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
+            <h3 className="text-lg font-semibold mb-3" style={{ color: '#1F2937' }}>Payment Instructions</h3>
+            
+            {/* Primary Bank Transfer Method */}
+            <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <h4 className="font-semibold mb-3" style={{ color: '#059669' }}>🏦 Bank Transfer (Recommended)</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p style={{ color: '#1F2937' }}><strong>Bank:</strong> Siddhartha Bank</p>
+                  <p style={{ color: '#1F2937' }}><strong>Account Number:</strong> 55501525653</p>
+                  <p style={{ color: '#1F2937' }}><strong>Account Name:</strong> Bhuban Shahi</p>
+                </div>
+                <div>
+                  <p style={{ color: '#1F2937' }}><strong>Amount:</strong> NPR {order.total}</p>
+                  <p style={{ color: '#1F2937' }}><strong>Reference:</strong> {order.id}</p>
+                  <p style={{ color: '#1F2937' }}><strong>Message:</strong> Open Book Order Payment</p>
+                </div>
+              </div>
+              <div className="mt-3 p-2 bg-green-100 rounded">
+                <p className="text-xs" style={{ color: '#047857' }}>
+                  <strong>📱 Quick Pay:</strong> Scan the QR code above with your banking app or screenshot these details
+                </p>
+              </div>
+            </div>
+
+            {/* Digital Wallet Options */}
+            <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+              <h4 className="font-semibold mb-2" style={{ color: '#7C3AED' }}>💳 Digital Wallet Options</h4>
+              <div className="text-sm space-y-1" style={{ color: '#6D28D9' }}>
+                <p>• <strong>eSewa:</strong> Send to Bhuban Shahi (ID: 9779803137472)</p>
+              </div>
+              <p className="text-xs mt-2" style={{ color: '#6D28D9' }}>
+                Use order ID <strong>{order.id}</strong> as reference when sending
+              </p>
+            </div>
+
+            {/* Mobile Banking */}
+            <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+              <h4 className="font-semibold mb-2" style={{ color: '#EA580C' }}>📱 Mobile Banking</h4>
+              <p className="text-sm" style={{ color: '#C2410C' }}>
+                Use your mobile banking app to scan the QR code or transfer to:<br/>
+                <strong>Siddhartha Bank - 55501525653 (Bhuban Shahi)</strong>
+              </p>
+            </div>
+
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm" style={{ color: '#1E40AF' }}>
+                <strong>💡 After Payment:</strong> Click "Proceed to Check Payment" below and provide your transaction details for verification.
+              </p>
+            </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex space-x-4">
+          <div className="flex space-x-4 mb-4">
             <button
               onClick={() => router.push('/books')}
               className="flex-1 px-6 py-3 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
@@ -193,10 +289,43 @@ export default function PaymentPage() {
             </button>
             <button
               onClick={fetchOrder}
-              className="flex-1 px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
-              Check Payment Status
+              Refresh Status
             </button>
+          </div>
+
+          {/* Manual Payment Option */}
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+            <h4 className="font-semibold mb-2" style={{ color: '#D97706' }}>📞 Payment Confirmation</h4>
+            <p className="text-sm mb-3" style={{ color: '#92400E' }}>
+              After completing your payment, contact us with your transaction details for quick verification:
+            </p>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => window.open('https://wa.me/9779803137472text=Payment completed for order ' + id + '. Transaction ID: [Your Transaction ID]', '_blank')}
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
+              >
+                💬 WhatsApp Bhuwan
+              </button>
+             
+            </div>
+            <p className="text-xs mt-2" style={{ color: '#92400E' }}>
+              Please include your transaction ID/reference number for faster verification
+            </p>
+          </div>
+
+          {/* Proceed to Check Payment Button */}
+          <div className="text-center">
+            <button
+              onClick={() => router.push(`/payment/verify/${id}`)}
+              className="w-full px-6 py-4 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-semibold text-lg"
+            >
+              ✓ Proceed to Check Payment
+            </button>
+            <p className="text-sm mt-2" style={{ color: '#6B7280' }}>
+              Click this after completing your payment to verify and access your PDF
+            </p>
           </div>
         </div>
       </div>
