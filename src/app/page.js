@@ -103,6 +103,9 @@ export default function Home() {
         title="Featured Books" 
         showAddButton={true} 
         user={user}
+        onBooksChange={(updatedBooks) => {
+          setBooks(updatedBooks);
+        }}
       />
 
       {/* Call to Action */}

@@ -139,6 +139,10 @@ export default function BooksPage() {
           title=""
           showAddButton={true}
           user={user}
+          onBooksChange={(updatedBooks) => {
+            setBooks(updatedBooks);
+            setFilteredBooks(updatedBooks);
+          }}
         />
       )}
     </Layout>

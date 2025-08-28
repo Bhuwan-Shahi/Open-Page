@@ -1,7 +1,21 @@
 import BookCard from './BookCard';
 import Link from 'next/link';
 
-export default function BookGrid({ books, title = "Books", showAddButton = false, user = null }) {
+export default function BookGrid({ books, title = "Books", showAddButton = false, user = null, onBooksChange }) {
+  
+  const handleBookUpdate = (updatedBook) => {
+    if (onBooksChange) {
+      onBooksChange(books.map(book => 
+        book.id === updatedBook.id ? updatedBook : book
+      ));
+    }
+  };
+
+  const handleBookDelete = (bookId) => {
+    if (onBooksChange) {
+      onBooksChange(books.filter(book => book.id !== bookId));
+    }
+  };
   return (
     <div className="w-full">
       {/* Header */}
@@ -24,7 +38,12 @@ export default function BookGrid({ books, title = "Books", showAddButton = false
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {books.length > 0 ? (
           books.map((book) => (
-            <BookCard key={book.id} book={book} />
+            <BookCard 
+              key={book.id} 
+              book={book} 
+              onUpdate={handleBookUpdate}
+              onDelete={handleBookDelete}
+            />
           ))
         ) : (
           <div className="col-span-full text-center py-12">

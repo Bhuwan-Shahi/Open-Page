@@ -3,10 +3,11 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import InteractiveButton from './InteractiveButton';
+import AdminBookActions from './AdminBookActions';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 
-export default function BookCard({ book }) {
+export default function BookCard({ book, onUpdate, onDelete }) {
   const { addToCart, isLoading } = useCart();
   const { user } = useAuth();
   const router = useRouter();
@@ -22,6 +23,14 @@ export default function BookCard({ book }) {
     }
     
     await addToCart(book);
+  };
+
+  const handleBookUpdate = (updatedBook) => {
+    onUpdate && onUpdate(updatedBook);
+  };
+
+  const handleBookDelete = (bookId) => {
+    onDelete && onDelete(bookId);
   };
 
   return (
@@ -76,6 +85,13 @@ export default function BookCard({ book }) {
             {isLoading ? 'Adding...' : user ? 'Add to Cart' : 'Login to Buy'}
           </button>
         </div>
+
+        {/* Admin Actions */}
+        <AdminBookActions 
+          book={book} 
+          onUpdate={handleBookUpdate}
+          onDelete={handleBookDelete}
+        />
       </div>
     </div>
   );
