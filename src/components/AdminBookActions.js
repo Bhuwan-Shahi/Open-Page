@@ -93,14 +93,14 @@ export default function AdminBookActions({ book, onUpdate, onDelete }) {
         <div className="flex space-x-2">
           <button
             onClick={() => setIsEditing(true)}
-            className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+            className="px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors"
             disabled={loading}
           >
             ✏️ Edit
           </button>
           <button
             onClick={() => setIsDeleting(true)}
-            className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+            className="px-3 py-1 bg-gray-700 text-white text-sm rounded hover:bg-gray-800 transition-colors"
             disabled={loading}
           >
             🗑️ Delete
@@ -179,7 +179,7 @@ export default function AdminBookActions({ book, onUpdate, onDelete }) {
             <button
               type="submit"
               disabled={loading}
-              className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors disabled:opacity-50"
+              className="px-3 py-1 bg-green-700 text-white text-sm rounded hover:bg-green-800 transition-colors disabled:opacity-50"
             >
               {loading ? 'Updating...' : '✓ Save'}
             </button>
@@ -218,7 +218,7 @@ export default function AdminBookActions({ book, onUpdate, onDelete }) {
               <button
                 onClick={handleDelete}
                 disabled={loading}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 transition-colors disabled:opacity-50"
               >
                 {loading ? 'Deleting...' : 'Yes, Delete'}
               </button>

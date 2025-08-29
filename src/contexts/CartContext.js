@@ -24,9 +24,6 @@ export function CartProvider({ children }) {
   const addToCart = async (book) => {
     setIsLoading(true);
     
-    // Add delay for testing loading spinner
-    // await new Promise(resolve => setTimeout(resolve, 800));
-    
     setCartItems(prev => {
       const existingItem = prev.find(item => item.id === book.id);
       if (existingItem) {
@@ -45,9 +42,6 @@ export function CartProvider({ children }) {
   const removeFromCart = async (bookId) => {
     setIsLoading(true);
     
-    // Add delay for testing loading spinner
-    // await new Promise(resolve => setTimeout(resolve, 500));
-    
     setCartItems(prev => prev.filter(item => item.id !== bookId));
     setIsLoading(false);
   };
@@ -59,9 +53,6 @@ export function CartProvider({ children }) {
     }
     
     setIsLoading(true);
-    
-    // Add delay for testing loading spinner
-    // await new Promise(resolve => setTimeout(resolve, 300));
     
     setCartItems(prev =>
       prev.map(item =>
@@ -76,9 +67,6 @@ export function CartProvider({ children }) {
 
   const clearCart = async () => {
     setIsLoading(true);
-    
-    // Add delay for testing loading spinner
-    // await new Promise(resolve => setTimeout(resolve, 600));
     
     setCartItems([]);
     setIsLoading(false);

@@ -73,11 +73,6 @@ export default function Home() {
           <InteractiveButton href="/books" variant="primary">
             Browse All Books
           </InteractiveButton>
-          {user && user.role === 'ADMIN' && (
-            <InteractiveButton href="/admin" variant="secondary">
-              Admin Panel
-            </InteractiveButton>
-          )}
         </div>
       </div>
 

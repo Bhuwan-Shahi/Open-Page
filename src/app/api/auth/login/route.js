@@ -38,11 +38,6 @@ export async function POST(request) {
       );
     }
 
-    // Debug: Check if password exists
-    console.log('User found:', user.email);
-    console.log('Password exists:', !!user.password);
-    console.log('Password type:', typeof user.password);
-
     if (!user.password) {
       return NextResponse.json(
         { error: 'Account setup incomplete. Please contact administrator.' },

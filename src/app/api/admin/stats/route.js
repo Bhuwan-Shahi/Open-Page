@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { withAuth } from '@/lib/authMiddleware';
-
-const prisma = new PrismaClient();
 
 export const GET = withAuth(async function(request) {
   try {
@@ -34,6 +32,15 @@ export const GET = withAuth(async function(request) {
       where: { status: 'PENDING' }
     });
 
+    // Get user statistics
+    const totalUsers = await prisma.user.count();
+    const verifiedUsers = await prisma.user.count({
+      where: { isVerified: true }
+    });
+    const adminUsers = await prisma.user.count({
+      where: { role: 'ADMIN' }
+    });
+
     // Get recent orders
     const recentOrders = await prisma.order.findMany({
       take: 5,
@@ -57,6 +64,9 @@ export const GET = withAuth(async function(request) {
       totalOrders,
       totalRevenue,
       pendingOrders,
+      totalUsers,
+      verifiedUsers,
+      adminUsers,
       recentOrders
     }, { status: 200 });
 

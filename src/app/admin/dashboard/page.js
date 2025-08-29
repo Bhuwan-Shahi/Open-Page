@@ -16,7 +16,10 @@ export default function AdminDashboard() {
     totalBooks: 0,
     totalOrders: 0,
     totalRevenue: 0,
-    pendingOrders: 0
+    pendingOrders: 0,
+    totalUsers: 0,
+    verifiedUsers: 0,
+    adminUsers: 0
   });
 
   useEffect(() => {
@@ -54,7 +57,12 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('/api/admin/stats');
+      const response = await fetch('/api/admin/stats', {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       
       if (response.ok) {
         const data = await response.json();
@@ -135,6 +143,23 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">👥</span>
+                </div>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Total Users</p>
+                <p className="text-2xl font-semibold text-gray-900">{stats.totalUsers}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
                 <div className="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
                   <span className="text-white text-sm font-bold">⏳</span>
                 </div>
@@ -142,6 +167,34 @@ export default function AdminDashboard() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-500">Pending Orders</p>
                 <p className="text-2xl font-semibold text-gray-900">{stats.pendingOrders}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-green-600 rounded-md flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">✓</span>
+                </div>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Verified Users</p>
+                <p className="text-2xl font-semibold text-gray-900">{stats.verifiedUsers}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-indigo-500 rounded-md flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">🔑</span>
+                </div>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Admin Users</p>
+                <p className="text-2xl font-semibold text-gray-900">{stats.adminUsers}</p>
               </div>
             </div>
           </div>
@@ -153,17 +206,31 @@ export default function AdminDashboard() {
           <div className="flex flex-wrap gap-4">
             <button
               onClick={() => router.push('/admin/upload')}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+              className="px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center"
             >
               <span className="mr-2">📚</span>
               Add New Book
             </button>
             <button
+              onClick={() => router.push('/admin/users')}
+              className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center"
+            >
+              <span className="mr-2">👥</span>
+              Manage Users
+            </button>
+            <button
               onClick={() => router.push('/admin/orders')}
-              className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center"
+              className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors flex items-center"
             >
               <span className="mr-2">📦</span>
               Manage Orders
+            </button>
+            <button
+              onClick={() => router.push('/admin/payments')}
+              className="px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center"
+            >
+              <span className="mr-2">💳</span>
+              Payment Screenshots
             </button>
             <button
               onClick={() => window.location.reload()}
@@ -197,7 +264,7 @@ export default function AdminDashboard() {
                 <p className="text-gray-500 mb-4">Start by adding your first book to the store</p>
                 <button
                   onClick={() => router.push('/admin/upload')}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+                  className="bg-gray-700 text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"
                 >
                   Add Your First Book
                 </button>

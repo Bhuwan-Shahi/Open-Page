@@ -126,7 +126,6 @@ export const POST = withAuth(async function(request) {
         userId: userId,
         total: totalAmount,
         status: 'PENDING',
-        paymentMethod: 'QR_CODE',
         expiresAt: expiresAt,
         orderItems: {
           create: orderItems
@@ -170,22 +169,8 @@ Message: BookStore Order Payment`;
       errorCorrectionLevel: 'M'
     });
 
-    // Update order with QR code and payment details
-    const updatedOrder = await prisma.order.update({
-      where: { id: order.id },
-      data: {
-        qrCode: qrCodeDataUrl,
-        paymentUrl: bankTransferText,
-        paymentMethod: 'BANK_TRANSFER'
-      },
-      include: {
-        orderItems: {
-          include: {
-            book: true
-          }
-        }
-      }
-    });
+    // Return the order (QR code generation and payment details are handled in the response)
+    const updatedOrder = order;
 
     return NextResponse.json({
       message: 'Order created successfully',
@@ -193,8 +178,8 @@ Message: BookStore Order Payment`;
         id: updatedOrder.id,
         total: updatedOrder.total,
         status: updatedOrder.status,
-        qrCode: updatedOrder.qrCode,
-        paymentUrl: updatedOrder.paymentUrl,
+        qrCode: qrCodeDataUrl,
+        paymentUrl: bankTransferText,
         expiresAt: updatedOrder.expiresAt,
         orderItems: updatedOrder.orderItems,
         // For backward compatibility with single book purchase

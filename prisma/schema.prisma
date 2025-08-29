@@ -34,6 +34,9 @@ model User {
   orders    Order[]
   reviews   Review[]
   cartItems CartItem[]
+  paymentScreenshots PaymentScreenshot[]
+  notifications Notification[]
+  bookAccess UserBookAccess[]
 
   @@map("users")
 }
@@ -64,28 +67,28 @@ model Book {
   orderItems  OrderItem[]
   reviews     Review[]
   cartItems   CartItem[]
+  userAccess  UserBookAccess[]
   
   @@map("books")
 }
 
 // Order model for purchase tracking
+// Order model for purchases
 model Order {
-  id            String      @id @default(cuid())
-  userId        String
-  total         Float
-  status        OrderStatus @default(PENDING)
-  paymentMethod String?
-  paymentId     String?     // Stripe payment intent ID
-  qrCode        String?     // QR code for payment
-  paymentUrl    String?     // Payment URL for QR code
-  expiresAt     DateTime?   // Payment expiration time
-  paidAt        DateTime?   // When payment was completed
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id                String      @id @default(cuid())
+  userId            String
+  total             Float
+  status            OrderStatus @default(PENDING)
+  expiresAt         DateTime?   // For payment timeout
+  screenshotUploaded Boolean    @default(false)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
   
   // Relations
-  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  orderItems    OrderItem[]
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderItems        OrderItem[]
+  paymentScreenshots PaymentScreenshot[]
+  userBookAccess    UserBookAccess[]
   
   @@map("orders")
 }
@@ -141,6 +144,70 @@ model CartItem {
   @@map("cart_items")
 }
 
+// Payment Screenshot model for payment verification
+model PaymentScreenshot {
+  id           String   @id @default(cuid())
+  orderId      String
+  userId       String
+  filename     String
+  originalName String
+  filePath     String
+  verified     Boolean  @default(false)
+  verifiedBy   String?  // Admin who verified
+  verifiedAt   DateTime?
+  uploadedAt   DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relations
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("payment_screenshots")
+}
+
+// Notification model for user notifications
+model Notification {
+  id        String             @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  data      Json?              // Additional data like orderId, bookId, etc.
+  read      Boolean            @default(false)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  
+  // Relations
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("notifications")
+}
+
+// UserBookAccess model to track book ownership and access
+model UserBookAccess {
+  id           String   @id @default(cuid())
+  userId       String
+  bookId       String
+  orderId      String   // Reference to the order that granted access
+  accessType   AccessType @default(PURCHASED)
+  grantedAt    DateTime @default(now())
+  expiresAt    DateTime? // For time-limited access (null for lifetime)
+  isActive     Boolean  @default(true)
+  downloadCount Int     @default(0)
+  lastAccessed DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relations
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book         Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, bookId]) // One access record per user per book
+  @@map("user_book_access")
+}
+
 // Enums
 enum Role {
   ADMIN
@@ -152,4 +219,19 @@ enum OrderStatus {
   PAID
   COMPLETED
   CANCELLED
+}
+
+enum NotificationType {
+  PAYMENT_VERIFIED
+  ORDER_COMPLETED
+  BOOK_AVAILABLE
+  PAYMENT_REJECTED
+  SYSTEM_MESSAGE
+}
+
+enum AccessType {
+  PURCHASED
+  GIFTED
+  TRIAL
+  SUBSCRIPTION
 }

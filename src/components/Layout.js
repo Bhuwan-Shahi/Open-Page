@@ -22,7 +22,6 @@ export default function Layout({ children, className = "" }) {
               <ul className="space-y-2" style={{ color: '#6B728E' }}>
                 <li><a href="/" className="transition-colors" style={{ color: '#6B728E' }} onMouseEnter={(e) => e.target.style.color = '#2D3748'} onMouseLeave={(e) => e.target.style.color = '#6B728E'}>Home</a></li>
                 <li><a href="/books" className="transition-colors" style={{ color: '#6B728E' }} onMouseEnter={(e) => e.target.style.color = '#2D3748'} onMouseLeave={(e) => e.target.style.color = '#6B728E'}>All Books</a></li>
-                <li><a href="/admin" className="transition-colors" style={{ color: '#6B728E' }} onMouseEnter={(e) => e.target.style.color = '#2D3748'} onMouseLeave={(e) => e.target.style.color = '#6B728E'}>Admin Panel</a></li>
               </ul>
             </div>
             <div>

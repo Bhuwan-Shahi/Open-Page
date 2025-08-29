@@ -38,8 +38,21 @@ export default function Header() {
               All Books
             </Link>
             {user && user.role === 'ADMIN' && (
-              <Link href="/admin/dashboard" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
-                Dashboard
+              <>
+                <Link href="/admin/dashboard" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
+                  Admin
+                </Link>
+                <Link href="/admin/users" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
+                  Users
+                </Link>
+                <Link href="/admin/payments" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
+                  Payments
+                </Link>
+              </>
+            )}
+            {user && user.role === 'USER' && (
+              <Link href="/dashboard" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
+                My Dashboard
               </Link>
             )}
             <Link href="/cart" className="text-lg font-medium transition-colors hover:opacity-80 relative px-3 py-2 rounded-lg" style={{ backgroundColor: '#4A90E2', color: 'white' }}>

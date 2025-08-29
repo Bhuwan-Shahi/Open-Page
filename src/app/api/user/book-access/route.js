@@ -1,21 +1,17 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { withAuth } from '@/lib/authMiddleware';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export const GET = withAuth(async function(request) {
   try {
     const { searchParams } = new URL(request.url);
     const bookId = searchParams.get('bookId');
-    const userId = request.user.id;
-
+    
     if (!bookId) {
-      return NextResponse.json(
-        { error: 'Book ID is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Book ID is required' }, { status: 400 });
     }
+
+    const userId = request.user.id;
 
     // Check if user has active access to this book
     const bookAccess = await prisma.userBookAccess.findUnique({
@@ -24,6 +20,23 @@ export const GET = withAuth(async function(request) {
           userId: userId,
           bookId: bookId
         }
+      },
+      include: {
+        book: {
+          select: {
+            id: true,
+            title: true,
+            author: true,
+            pdfUrl: true
+          }
+        },
+        order: {
+          select: {
+            id: true,
+            status: true,
+            total: true
+          }
+        }
       }
     });
 
@@ -31,35 +44,21 @@ export const GET = withAuth(async function(request) {
                      bookAccess.isActive && 
                      (!bookAccess.expiresAt || new Date() <= bookAccess.expiresAt);
 
-    // Also check legacy orders for backward compatibility
-    const existingOrder = await prisma.order.findFirst({
-      where: {
-        userId: userId,
-        status: {
-          in: ['PAID', 'COMPLETED']
-        },
-        orderItems: {
-          some: {
-            bookId: bookId
-          }
-        }
-      }
-    });
-
     return NextResponse.json({
-      ownsBook: hasAccess || !!existingOrder,
-      hasActiveAccess: hasAccess,
+      hasAccess,
+      bookAccess: hasAccess ? bookAccess : null,
       accessDetails: hasAccess ? {
         grantedAt: bookAccess.grantedAt,
-        accessType: bookAccess.accessType,
-        downloadCount: bookAccess.downloadCount
+        downloadCount: bookAccess.downloadCount,
+        lastAccessed: bookAccess.lastAccessed,
+        accessType: bookAccess.accessType
       } : null
-    });
+    }, { status: 200 });
 
   } catch (error) {
-    console.error('Error checking ownership:', error);
+    console.error('Error checking book access:', error);
     return NextResponse.json(
-      { error: 'Failed to check ownership' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

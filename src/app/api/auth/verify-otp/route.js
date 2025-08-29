@@ -34,14 +34,11 @@ export async function POST(request) {
     });
 
     if (!user) {
-      console.log('❌ User not found for verification');
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
       );
     }
-
-    console.log('✅ User found:', user.email, 'OTP in DB:', user.otpCode ? '***' + user.otpCode.slice(-2) : 'none');
 
     // Check OTP attempts
     if (user.otpAttempts >= 5) {
@@ -53,7 +50,6 @@ export async function POST(request) {
 
     // Check if OTP exists and is valid
     if (!user.otpCode || !user.otpExpiresAt) {
-      console.log('❌ No OTP found in database');
       return NextResponse.json(
         { error: 'No OTP found. Please request a new OTP.' },
         { status: 400 }
@@ -61,7 +57,6 @@ export async function POST(request) {
     }
 
     if (!isOTPValid(user.otpExpiresAt)) {
-      console.log('❌ OTP expired');
       return NextResponse.json(
         { error: 'OTP has expired. Please request a new OTP.' },
         { status: 400 }
@@ -70,7 +65,6 @@ export async function POST(request) {
 
     // Verify OTP
     if (user.otpCode !== otpCode) {
-      console.log('❌ Invalid OTP code');
       // Increment attempts
       await prisma.user.update({
         where: { id: user.id },
@@ -85,8 +79,6 @@ export async function POST(request) {
         { status: 400 }
       );
     }
-
-    console.log('✅ OTP verification successful!');
 
     // OTP is valid - update user
     const updateData = {

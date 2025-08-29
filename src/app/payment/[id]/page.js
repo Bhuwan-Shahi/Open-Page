@@ -14,6 +14,9 @@ export default function PaymentPage() {
   const [loading, setLoading] = useState(true);
   const [timeLeft, setTimeLeft] = useState(null);
   const [error, setError] = useState('');
+  const [paymentScreenshot, setPaymentScreenshot] = useState(null);
+  const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
+  const [screenshotUploaded, setScreenshotUploaded] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -55,6 +58,12 @@ export default function PaymentPage() {
       if (response.ok) {
         const data = await response.json();
         setOrder(data.order);
+        
+        // If order is already paid, redirect to success page or dashboard
+        if (data.order.status === 'PAID' || data.order.status === 'COMPLETED') {
+          router.push('/dashboard?payment=success');
+          return;
+        }
       } else {
         setError('Order not found');
       }
@@ -63,6 +72,58 @@ export default function PaymentPage() {
       setError('Failed to load order');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleScreenshotUpload = async (file) => {
+    if (!file) return;
+
+    setUploadingScreenshot(true);
+    setError('');
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('orderId', id);
+      formData.append('type', 'payment-screenshot');
+
+      const response = await fetch('/api/upload-payment-screenshot', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setScreenshotUploaded(true);
+        setPaymentScreenshot(null);
+        alert('Payment screenshot uploaded successfully! We will verify your payment shortly.');
+      } else {
+        setError(data.error || 'Failed to upload screenshot');
+      }
+    } catch (error) {
+      console.error('Error uploading screenshot:', error);
+      setError('Failed to upload screenshot');
+    } finally {
+      setUploadingScreenshot(false);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        setError('File size should be less than 5MB');
+        return;
+      }
+      
+      if (!file.type.startsWith('image/')) {
+        setError('Please select an image file');
+        return;
+      }
+      
+      setPaymentScreenshot(file);
+      setError('');
     }
   };
 
@@ -277,6 +338,73 @@ export default function PaymentPage() {
                 <strong>💡 After Payment:</strong> Click "Proceed to Check Payment" below and provide your transaction details for verification.
               </p>
             </div>
+          </div>
+
+          {/* Payment Screenshot Upload */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+            <h3 className="text-lg font-semibold mb-3" style={{ color: '#1F2937' }}>📸 Upload Payment Screenshot</h3>
+            <p className="text-sm mb-4" style={{ color: '#6B7280' }}>
+              After completing your payment, upload a screenshot of your transaction for faster verification.
+            </p>
+            
+            {!screenshotUploaded ? (
+              <div className="space-y-4">
+                <div className="border-2 border-dashed border-blue-300 rounded-lg p-6 text-center">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    id="screenshot-upload"
+                    disabled={uploadingScreenshot}
+                  />
+                  <label
+                    htmlFor="screenshot-upload"
+                    className="cursor-pointer"
+                  >
+                    <div className="text-blue-500 text-4xl mb-2">📱</div>
+                    <p className="text-blue-600 font-medium">Click to select screenshot</p>
+                    <p className="text-sm text-gray-500 mt-1">PNG, JPG, or JPEG (max 5MB)</p>
+                  </label>
+                </div>
+                
+                {paymentScreenshot && (
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-green-600">✓</span>
+                        <span className="text-sm font-medium">{paymentScreenshot.name}</span>
+                      </div>
+                      <button
+                        onClick={() => setPaymentScreenshot(null)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                    <button
+                      onClick={() => handleScreenshotUpload(paymentScreenshot)}
+                      disabled={uploadingScreenshot}
+                      className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
+                    >
+                      {uploadingScreenshot ? 'Uploading...' : 'Upload Screenshot'}
+                    </button>
+                  </div>
+                )}
+                
+                {error && (
+                  <div className="bg-red-100 border border-red-200 rounded-lg p-3">
+                    <p className="text-red-700 text-sm">{error}</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="bg-green-100 border border-green-200 rounded-lg p-4 text-center">
+                <div className="text-green-600 text-2xl mb-2">✅</div>
+                <p className="text-green-800 font-medium">Screenshot uploaded successfully!</p>
+                <p className="text-green-700 text-sm mt-1">We will verify your payment and notify you soon.</p>
+              </div>
+            )}
           </div>
 
           {/* Action Buttons */}
