@@ -57,7 +57,7 @@ export async function sendWelcomeEmail(email, name) {
     return { success: true };
     
     // Uncomment below for real email sending:
-    /*
+    
     const htmlContent = generateWelcomeEmailHTML(name);
     
     const mailOptions = {
@@ -70,7 +70,7 @@ export async function sendWelcomeEmail(email, name) {
     const result = await transporter.sendMail(mailOptions);
     console.log('Welcome email sent successfully:', result.messageId);
     return { success: true, messageId: result.messageId };
-    */
+    
   } catch (error) {
     console.error('Welcome email sending error:', error);
     return { success: false, error: error.message };
