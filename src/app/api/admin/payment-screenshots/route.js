@@ -2,6 +2,21 @@ import { NextResponse } from 'next/server';
 import { withAuth } from '@/lib/authMiddleware';
 import { prisma } from '@/lib/prisma';
 import { createNotification } from '@/lib/notifications';
+import fs from 'fs/promises';
+import path from 'path';
+
+// Helper function to delete a file safely
+async function deleteFile(filename) {
+  try {
+    const fullFilePath = path.join(process.cwd(), 'uploads', filename);
+    await fs.unlink(fullFilePath);
+    console.log('✅ Physical file deleted:', filename);
+    return true;
+  } catch (error) {
+    console.warn('⚠️ Could not delete physical file:', error.message);
+    return false;
+  }
+}
 
 export const GET = withAuth(async function(request) {
   try {
@@ -188,16 +203,6 @@ export const PATCH = withAuth(async function(request) {
         }, { status: 200 });
 
       } else if (action === 'reject') {
-        // Mark screenshot as rejected (you might want to add a rejection reason)
-        await prisma.paymentScreenshot.update({
-          where: { id: screenshotId },
-          data: {
-            verified: false,
-            verifiedBy: request.user.id,
-            verifiedAt: new Date()
-          }
-        });
-
         // Get the order with book details for notification
         const orderDetails = await prisma.order.findUnique({
           where: { id: screenshot.orderId },
@@ -211,13 +216,21 @@ export const PATCH = withAuth(async function(request) {
           }
         });
 
+        // Delete the physical file from filesystem
+        await deleteFile(screenshot.filename);
+
+        // Delete the screenshot record from database
+        await prisma.paymentScreenshot.delete({
+          where: { id: screenshotId }
+        });
+
         // Create notification for the user
         const bookTitle = orderDetails.orderItems[0]?.book?.title || 'Your book';
         await createNotification(
           orderDetails.userId,
           'PAYMENT_REJECTED',
           '❌ Payment Verification Failed',
-          `We couldn't verify your payment for "${bookTitle}". Please contact support or upload a clearer screenshot.`,
+          `We couldn't verify your payment for "${bookTitle}". The uploaded screenshot has been removed. Please contact support or upload a clearer screenshot with valid payment details.`,
           {
             orderId: screenshot.orderId,
             bookId: orderDetails.orderItems[0]?.book?.id,
@@ -226,7 +239,7 @@ export const PATCH = withAuth(async function(request) {
         );
 
         return NextResponse.json({
-          message: 'Payment rejected'
+          message: 'Payment rejected and screenshot deleted'
         }, { status: 200 });
       }
 
