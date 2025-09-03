@@ -1,3 +1,5 @@
+"use client"
+// ...existing code...
 
 import { Suspense } from 'react'
 import { useState, useEffect } from 'react'
