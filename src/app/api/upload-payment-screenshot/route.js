@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
 import { withAuth } from '@/lib/authMiddleware';
 import { prisma } from '@/lib/prisma';
+import { uploadToS3 } from '@/lib/s3';
+import path from 'path';
 
 export const POST = withAuth(async function(request) {
   try {
@@ -44,19 +44,16 @@ export const POST = withAuth(async function(request) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
-      // Create uploads directory if it doesn't exist
-      const uploadsDir = path.join(process.cwd(), 'public', 'uploads', 'payment-screenshots');
-      await mkdir(uploadsDir, { recursive: true });
-
       // Generate unique filename
       const timestamp = Date.now();
       const originalName = file.name;
       const extension = path.extname(originalName);
-      const filename = `${orderId}-${timestamp}${extension}`;
-      const filepath = path.join(uploadsDir, filename);
+      const filename = `payment-screenshots/${orderId}-${timestamp}${extension}`;
 
-      // Write file
-      await writeFile(filepath, buffer);
+      // Upload to S3
+      console.log('☁️ Uploading to S3...');
+      const s3Url = await uploadToS3(buffer, filename, file.type);
+      console.log('✅ S3 upload successful:', s3Url);
 
       // Store screenshot info in database
       console.log('💾 Creating database record...');
@@ -66,7 +63,7 @@ export const POST = withAuth(async function(request) {
           userId: request.user.id,
           filename: filename,
           originalName: originalName,
-          filePath: `/uploads/payment-screenshots/${filename}`,
+          filePath: s3Url,
           uploadedAt: new Date(),
           verified: false
         }

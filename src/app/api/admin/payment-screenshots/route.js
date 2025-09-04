@@ -2,18 +2,17 @@ import { NextResponse } from 'next/server';
 import { withAuth } from '@/lib/authMiddleware';
 import { prisma } from '@/lib/prisma';
 import { createNotification } from '@/lib/notifications';
-import fs from 'fs/promises';
-import path from 'path';
+import { deleteFromS3, extractS3KeyFromUrl } from '@/lib/s3';
 
-// Helper function to delete a file safely
-async function deleteFile(filename) {
+// Helper function to delete a file from S3
+async function deleteFile(fileUrl) {
   try {
-    const fullFilePath = path.join(process.cwd(), 'uploads', filename);
-    await fs.unlink(fullFilePath);
-    console.log('✅ Physical file deleted:', filename);
+    const s3Key = extractS3KeyFromUrl(fileUrl);
+    await deleteFromS3(s3Key);
+    console.log('✅ S3 file deleted:', s3Key);
     return true;
   } catch (error) {
-    console.warn('⚠️ Could not delete physical file:', error.message);
+    console.warn('⚠️ Could not delete S3 file:', error.message);
     return false;
   }
 }
@@ -216,8 +215,8 @@ export const PATCH = withAuth(async function(request) {
           }
         });
 
-        // Delete the physical file from filesystem
-        await deleteFile(screenshot.filename);
+        // Delete the physical file from S3
+        await deleteFile(screenshot.filePath);
 
         // Delete the screenshot record from database
         await prisma.paymentScreenshot.delete({
