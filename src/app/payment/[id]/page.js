@@ -272,73 +272,13 @@ export default function PaymentPage() {
                 </p>
               </div>
               
-              {/* Reference Info */}
-              <div className="bg-blue-100 border border-blue-300 rounded-lg p-2">
-                <p className="text-blue-800 text-sm">
-                  <strong>Reference:</strong> {order.id}
-                </p>
-                <p className="text-blue-700 text-xs">
-                  Add this reference in remarks/message
-                </p>
-              </div>
+              
             </div>
             <p className="text-sm mt-4" style={{ color: '#6B7280' }}>
               Scan with Siddhartha Bank app or any mobile banking app
             </p>
           </div>
 
-          {/* Payment Instructions */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
-            <h3 className="text-lg font-semibold mb-3" style={{ color: '#1F2937' }}>Payment Instructions</h3>
-            
-            {/* Primary Bank Transfer Method */}
-            <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <h4 className="font-semibold mb-3" style={{ color: '#059669' }}>🏦 Bank Transfer (Recommended)</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p style={{ color: '#1F2937' }}><strong>Bank:</strong> Siddhartha Bank</p>
-                  <p style={{ color: '#1F2937' }}><strong>Account Number:</strong> 55501525653</p>
-                  <p style={{ color: '#1F2937' }}><strong>Account Name:</strong> Bhuban Shahi</p>
-                </div>
-                <div>
-                  <p style={{ color: '#1F2937' }}><strong>Amount:</strong> NPR {order.total}</p>
-                  <p style={{ color: '#1F2937' }}><strong>Reference:</strong> {order.id}</p>
-                  <p style={{ color: '#1F2937' }}><strong>Message:</strong> Open Book Order Payment</p>
-                </div>
-              </div>
-              <div className="mt-3 p-2 bg-green-100 rounded">
-                <p className="text-xs" style={{ color: '#047857' }}>
-                  <strong>📱 Quick Pay:</strong> Scan the QR code above with your banking app or screenshot these details
-                </p>
-              </div>
-            </div>
-
-            {/* Digital Wallet Options */}
-            <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-              <h4 className="font-semibold mb-2" style={{ color: '#7C3AED' }}>💳 Digital Wallet Options</h4>
-              <div className="text-sm space-y-1" style={{ color: '#6D28D9' }}>
-                <p>• <strong>eSewa:</strong> Send to Bhuban Shahi (ID: 9779803137472)</p>
-              </div>
-              <p className="text-xs mt-2" style={{ color: '#6D28D9' }}>
-                Use order ID <strong>{order.id}</strong> as reference when sending
-              </p>
-            </div>
-
-            {/* Mobile Banking */}
-            <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-              <h4 className="font-semibold mb-2" style={{ color: '#EA580C' }}>📱 Mobile Banking</h4>
-              <p className="text-sm" style={{ color: '#C2410C' }}>
-                Use your mobile banking app to scan the QR code or transfer to:<br/>
-                <strong>Siddhartha Bank - 55501525653 (Bhuban Shahi)</strong>
-              </p>
-            </div>
-
-            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm" style={{ color: '#1E40AF' }}>
-                <strong>💡 After Payment:</strong> Click "Proceed to Check Payment" below and provide your transaction details for verification.
-              </p>
-            </div>
-          </div>
 
           {/* Payment Screenshot Upload */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
@@ -423,38 +363,7 @@ export default function PaymentPage() {
             </button>
           </div>
 
-          {/* Manual Payment Option */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-            <h4 className="font-semibold mb-2" style={{ color: '#D97706' }}>📞 Payment Confirmation</h4>
-            <p className="text-sm mb-3" style={{ color: '#92400E' }}>
-              After completing your payment, contact us with your transaction details for quick verification:
-            </p>
-            <div className="flex space-x-2">
-              <button
-                onClick={() => window.open('https://wa.me/9779803137472text=Payment completed for order ' + id + '. Transaction ID: [Your Transaction ID]', '_blank')}
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
-              >
-                💬 WhatsApp Bhuwan
-              </button>
-             
-            </div>
-            <p className="text-xs mt-2" style={{ color: '#92400E' }}>
-              Please include your transaction ID/reference number for faster verification
-            </p>
-          </div>
-
-          {/* Proceed to Check Payment Button */}
-          <div className="text-center">
-            <button
-              onClick={() => router.push(`/payment/verify/${id}`)}
-              className="w-full px-6 py-4 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors font-semibold text-lg"
-            >
-              ✓ Proceed to Check Payment
-            </button>
-            <p className="text-sm mt-2" style={{ color: '#6B7280' }}>
-              Click this after completing your payment to verify and access your PDF
-            </p>
-          </div>
+          
         </div>
       </div>
     </Layout>
