@@ -1,98 +1,88 @@
 'use client'
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
+
+const linkCls = "px-2 py-2 rounded-md text-muted hover:text-ink transition-colors";
 
 export default function Header() {
   const { getTotalItems, clearCart } = useCart();
   const { user, logout, loading } = useAuth();
+  const pathname = usePathname();
   const itemCount = getTotalItems();
 
   const handleLogout = async () => {
     try {
-      // Clear cart before logging out
       await clearCart();
       await logout();
     } catch (error) {
       console.error('Logout error:', error);
-      // Force redirect even if logout fails
       window.location.href = '/';
     }
   };
 
   return (
-    <header className="bg-white shadow-sm border-b" style={{ borderColor: '#D1D5DB' }}>
+    <header className="sticky top-0 z-40 bg-paper/95 backdrop-blur border-b border-line">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
-            <Link href="/" className="text-2xl font-bold hover:opacity-80 transition-opacity" style={{ color: '#2D3748' }}>
-              📚 Open Book 
-            </Link>
-          </div>
-          <nav className="flex space-x-6 items-center">
-            <Link href="/" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
-              Home
-            </Link>
-            <Link href="/books" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
-              All Books
-            </Link>
+        <div className="flex justify-between items-center h-16 gap-4">
+          <Link href="/" className="font-display text-2xl font-bold tracking-tight hover:opacity-80 transition-opacity">
+            📚 Open Book
+          </Link>
+          <nav className="flex items-center gap-1 sm:gap-4 text-sm">
+            <Link href="/" className={`${linkCls} hidden sm:block${pathname === '/' ? ' text-ink font-semibold' : ''}`}>Home</Link>
+            <Link href="/books" className={`${linkCls}${pathname === '/books' ? ' text-ink font-semibold' : ''}`}>Books</Link>
             {user && user.role === 'ADMIN' && (
               <>
-                <Link href="/admin/dashboard" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
-                  Admin
-                </Link>
-                <Link href="/admin/users" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
-                  Users
-                </Link>
-                <Link href="/admin/payments" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
-                  Payments
-                </Link>
+                <Link href="/admin/dashboard" className={`${linkCls} hidden md:block`}>Dashboard</Link>
+                <Link href="/admin/users" className={`${linkCls} hidden md:block`}>Users</Link>
+                <Link href="/admin/payments" className={`${linkCls} hidden md:block`}>Payments</Link>
               </>
             )}
             {user && user.role === 'USER' && (
-              <Link href="/dashboard" className="text-lg font-medium transition-colors hover:opacity-80" style={{ color: '#4A90E2' }}>
-                My Dashboard
-              </Link>
+              <Link href="/dashboard" className={`${linkCls} hidden md:block`}>My Library</Link>
             )}
-            <Link href="/cart" className="text-lg font-medium transition-colors hover:opacity-80 relative px-3 py-2 rounded-lg" style={{ backgroundColor: '#4A90E2', color: 'white' }}>
-              Cart
-              {/* Cart count badge */}
+
+            <Link
+              href="/cart"
+              aria-label={`Cart, ${itemCount} item${itemCount === 1 ? '' : 's'}`}
+              className="relative inline-flex items-center gap-1 px-3 py-2 rounded-lg font-semibold bg-ink text-paper hover:bg-night transition-colors"
+            >
+              <span aria-hidden="true">🛒</span>
+              <span className="hidden sm:inline">Cart</span>
               {itemCount > 0 && (
-                <span className="absolute -top-2 -right-2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold" style={{ backgroundColor: '#FF6B35' }}>
+                <span className="absolute -top-1.5 -right-1.5 bg-amber text-white text-[11px] rounded-full h-5 min-w-5 px-1 flex items-center justify-center font-bold">
                   {itemCount}
                 </span>
               )}
             </Link>
-            
-            {/* Auth Section */}
-            <div className="flex space-x-3 ml-4 items-center">
+
+            <div className="flex items-center gap-2 ml-1 sm:ml-2">
               {loading ? (
-                <div className="text-sm text-gray-500">Loading...</div>
+                <span className="text-sm text-muted">…</span>
               ) : user ? (
-                <div className="flex items-center space-x-3">
-                  <span className="text-sm font-medium" style={{ color: '#2D3748' }}>
-                    Welcome, {user.name}
+                <>
+                  <span className="hidden sm:inline text-sm text-muted">
+                    {user.name}
+                    {user.role === 'ADMIN' && (
+                      <span className="ml-2 px-2 py-0.5 text-[11px] font-semibold rounded-full bg-amber text-white">Admin</span>
+                    )}
                   </span>
-                  {user.role === 'ADMIN' && (
-                    <span className="px-2 py-1 text-xs font-medium rounded-full" style={{ backgroundColor: '#F5A623', color: 'white' }}>
-                      Admin
-                    </span>
-                  )}
                   <button
                     onClick={handleLogout}
-                    className="px-4 py-2 text-sm font-medium transition-colors rounded-md hover:opacity-80"
-                    style={{ backgroundColor: '#DC3545', color: 'white' }}
+                    className="px-3 py-2 text-sm font-medium rounded-md border border-line text-ink hover:bg-card transition-colors"
                   >
                     Logout
                   </button>
-                </div>
+                </>
               ) : (
-                <div className="flex space-x-3">
-                  <Link href="/login" className="px-4 py-2 text-sm font-medium transition-colors rounded-md border hover:opacity-80" style={{ color: '#4A90E2', borderColor: '#4A90E2' }}>
-                    Login
-                  </Link>
-                  <Link href="/register" className="px-4 py-2 text-sm font-medium transition-colors rounded-md hover:opacity-80" style={{ backgroundColor: '#28A745', color: 'white' }}>
+                <div className="flex items-center gap-2">
+                  <Link href="/login" className={`${linkCls} hidden sm:block`}>Login</Link>
+                  <Link
+                    href="/register"
+                    className="px-3 py-2 text-sm font-semibold rounded-md bg-amber text-white hover:bg-amber-soft transition-colors"
+                  >
                     Register
                   </Link>
                 </div>

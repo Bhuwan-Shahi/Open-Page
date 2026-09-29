@@ -1,42 +1,44 @@
 import Header from './Header';
+import Link from 'next/link';
 
 export default function Layout({ children, className = "" }) {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#E8F4FD' }}>
+    <div className="min-h-screen bg-paper text-ink">
       <Header />
       <main className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ${className}`}>
         {children}
       </main>
-      <footer className="bg-white border-t mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <footer className="border-t border-line mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-lg font-semibold mb-4" style={{ color: '#2D3748' }}>📚 BookStore</h3>
-              <p style={{ color: '#6B728E' }}>
-                Your digital library for amazing books in PDF format. 
-                Discover, purchase, and download books instantly.
+              <h3 className="font-display text-xl font-bold mb-3">📚 Open Book</h3>
+              <p className="text-sm text-muted">
+                Your digital library. Discover, purchase, and download books instantly.
               </p>
             </div>
             <div>
-              <h4 className="text-md font-semibold mb-4" style={{ color: '#2D3748' }}>Quick Links</h4>
-              <ul className="space-y-2" style={{ color: '#6B728E' }}>
-                <li><a href="/" className="transition-colors" style={{ color: '#6B728E' }} onMouseEnter={(e) => e.target.style.color = '#2D3748'} onMouseLeave={(e) => e.target.style.color = '#6B728E'}>Home</a></li>
-                <li><a href="/books" className="transition-colors" style={{ color: '#6B728E' }} onMouseEnter={(e) => e.target.style.color = '#2D3748'} onMouseLeave={(e) => e.target.style.color = '#6B728E'}>All Books</a></li>
+              <h4 className="font-display text-lg font-semibold mb-3">Quick Links</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/" className="text-muted hover:text-ink transition-colors">Home</Link></li>
+                <li><Link href="/books" className="text-muted hover:text-ink transition-colors">All Books</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-md font-semibold mb-4" style={{ color: '#2D3748' }}>Categories</h4>
-              <ul className="space-y-2" style={{ color: '#6B728E' }}>
-                <li><a href="/books?category=fiction" className="transition-colors" style={{ color: '#6B728E' }} onMouseEnter={(e) => e.target.style.color = '#2D3748'} onMouseLeave={(e) => e.target.style.color = '#6B728E'}>Fiction</a></li>
-                <li><a href="/books?category=science" className="transition-colors" style={{ color: '#6B728E' }} onMouseEnter={(e) => e.target.style.color = '#2D3748'} onMouseLeave={(e) => e.target.style.color = '#6B728E'}>Science</a></li>
-                <li><a href="/books?category=business" className="transition-colors" style={{ color: '#6B728E' }} onMouseEnter={(e) => e.target.style.color = '#2D3748'} onMouseLeave={(e) => e.target.style.color = '#6B728E'}>Business</a></li>
-                <li><a href="/books?category=technology" className="transition-colors" style={{ color: '#6B728E' }} onMouseEnter={(e) => e.target.style.color = '#2D3748'} onMouseLeave={(e) => e.target.style.color = '#6B728E'}>Technology</a></li>
+              <h4 className="font-display text-lg font-semibold mb-3">Categories</h4>
+              <ul className="space-y-2 text-sm">
+                {['Fiction', 'Science', 'Business', 'Technology'].map((c) => (
+                  <li key={c}>
+                    <Link href={`/books?category=${c.toLowerCase()}`} className="text-muted hover:text-ink transition-colors">{c}</Link>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
-          <div className="border-t mt-8 pt-8 text-center" style={{ color: '#6B728E', borderColor: '#D1D5DB' }}>
-            <p>&copy; 2025 BookStore. Built with Next.js and PostgreSQL.</p>
+          <div className="border-t border-line mt-8 pt-6 text-center text-sm text-muted">
+            <p>&copy; 2025 Open Book. Built with Next.js and PostgreSQL.</p>
           </div>
+          {/* ponytail: footer category links don't filter yet — /books ignores ?category=; wire it when it matters */}
         </div>
       </footer>
     </div>

@@ -1,5 +1,38 @@
 @import "tailwindcss";
 
+@theme {
+  /* Editorial bookstore palette — warm paper, ink, amber accent */
+  --color-paper: #faf5ec;
+  --color-card: #ffffff;
+  --color-ink: #2b2620;
+  --color-muted: #6b6154;
+  --color-amber: #b45309;
+  --color-amber-soft: #d97706;
+  --color-leaf: #15803d;
+  --color-line: #e7dcc8;
+  --color-night: #211d16;
+
+  /* Editorial Classic pairing: Cormorant Garamond display + Libre Baskerville body */
+  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-body: var(--font-baskerville), "Libre Baskerville", Georgia, serif;
+}
+
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-amber);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
 }

@@ -142,11 +142,11 @@ export default function PaymentPage() {
       <Layout>
         <div className="max-w-2xl mx-auto p-6">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4" style={{ color: '#DC2626' }}>Error</h1>
-            <p className="mb-6" style={{ color: '#6B7280' }}>{error}</p>
+            <h1 className="font-display text-2xl font-bold mb-4 text-red-700">Error</h1>
+            <p className="mb-6 text-muted">{error}</p>
             <button
               onClick={() => router.push('/books')}
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="px-6 py-2 bg-ink text-paper rounded-md hover:bg-night transition-colors"
             >
               Back to Books
             </button>
@@ -161,10 +161,10 @@ export default function PaymentPage() {
       <Layout>
         <div className="max-w-2xl mx-auto p-6">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4" style={{ color: '#1F2937' }}>Order Not Found</h1>
+            <h1 className="font-display text-2xl font-bold mb-4">Order Not Found</h1>
             <button
               onClick={() => router.push('/books')}
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="px-6 py-2 bg-ink text-paper rounded-md hover:bg-night transition-colors"
             >
               Back to Books
             </button>
@@ -179,15 +179,15 @@ export default function PaymentPage() {
       <div className="max-w-2xl mx-auto p-6">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2" style={{ color: '#1F2937' }}>Complete Payment</h1>
-            <p style={{ color: '#6B7280' }}>
+            <h1 className="font-display text-3xl font-bold mb-2">Complete Payment</h1>
+            <p className="text-muted">
               Scan the QR code below to pay for your {order.orderItems?.length > 1 ? 'books' : 'book'}
             </p>
           </div>
 
           {/* Order Details */}
-          <div className="bg-gray-50 rounded-lg p-6 mb-8">
-            <h2 className="text-xl font-semibold mb-4" style={{ color: '#1F2937' }}>Order Details</h2>
+          <div className="bg-paper border border-line rounded-xl p-6 mb-8">
+            <h2 className="font-display text-xl font-semibold mb-4">Order Details</h2>
             
             {/* Multiple items display */}
             {order.orderItems && order.orderItems.length > 1 ? (
@@ -196,22 +196,22 @@ export default function PaymentPage() {
                   {order.orderItems.map((item, index) => (
                     <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
                       <div>
-                        <span className="font-medium" style={{ color: '#1F2937' }}>{item.book?.title}</span>
+                        <span className="font-medium text-ink">{item.book?.title}</span>
                         <br />
-                        <span className="text-sm" style={{ color: '#6B7280' }}>by {item.book?.author}</span>
+                        <span className="text-sm text-muted">by {item.book?.author}</span>
                       </div>
-                      <span className="font-semibold" style={{ color: '#059669' }}>NPR {item.price}</span>
+                      <span className="font-semibold text-leaf">NPR {item.price}</span>
                     </div>
                   ))}
                 </div>
                 <div className="border-t pt-2">
                   <div className="flex justify-between">
-                    <span style={{ color: '#6B7280' }}>Total Amount:</span>
-                    <span className="font-bold" style={{ color: '#059669' }}>NPR {order.total}</span>
+                    <span className="text-muted">Total Amount:</span>
+                    <span className="font-bold text-leaf">NPR {order.total}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span style={{ color: '#6B7280' }}>Order ID:</span>
-                    <span className="font-mono text-sm" style={{ color: '#1F2937' }}>{order.id}</span>
+                    <span className="text-muted">Order ID:</span>
+                    <span className="font-mono text-sm text-ink">{order.id}</span>
                   </div>
                 </div>
               </div>
@@ -219,20 +219,20 @@ export default function PaymentPage() {
               /* Single item display */
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span style={{ color: '#6B7280' }}>Book:</span>
-                  <span className="font-medium" style={{ color: '#1F2937' }}>{order.book?.title || order.orderItems?.[0]?.book?.title}</span>
+                  <span className="text-muted">Book:</span>
+                  <span className="font-medium text-ink">{order.book?.title || order.orderItems?.[0]?.book?.title}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span style={{ color: '#6B7280' }}>Author:</span>
-                  <span className="font-medium" style={{ color: '#1F2937' }}>{order.book?.author || order.orderItems?.[0]?.book?.author}</span>
+                  <span className="text-muted">Author:</span>
+                  <span className="font-medium text-ink">{order.book?.author || order.orderItems?.[0]?.book?.author}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span style={{ color: '#6B7280' }}>Price:</span>
-                  <span className="font-bold" style={{ color: '#059669' }}>NPR {order.total}</span>
+                  <span className="text-muted">Price:</span>
+                  <span className="font-bold text-leaf">NPR {order.total}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span style={{ color: '#6B7280' }}>Order ID:</span>
-                  <span className="font-mono text-sm" style={{ color: '#1F2937' }}>{order.id}</span>
+                  <span className="text-muted">Order ID:</span>
+                  <span className="font-mono text-sm text-ink">{order.id}</span>
                 </div>
               </div>
             )}
@@ -240,8 +240,8 @@ export default function PaymentPage() {
 
           {/* Timer */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center bg-orange-100 px-4 py-2 rounded-full" style={{ color: '#9A3412' }}>
-              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <div className="inline-flex items-center bg-amber/10 px-4 py-2 rounded-full text-amber">
+              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
               </svg>
               <span className="font-medium">
@@ -263,7 +263,7 @@ export default function PaymentPage() {
               </div>
               
               {/* Amount Alert */}
-              <div className="bg-red-100 border border-red-300 rounded-lg p-3 mb-2">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-2">
                 <p className="text-red-800 font-bold text-lg">
                   ⚠️ ENTER AMOUNT: NPR {order.total}
                 </p>
@@ -274,7 +274,7 @@ export default function PaymentPage() {
               
               
             </div>
-            <p className="text-sm mt-4" style={{ color: '#6B7280' }}>
+            <p className="text-sm mt-4 text-muted">
               Scan with Siddhartha Bank app or any mobile banking app
             </p>
           </div>
@@ -282,8 +282,8 @@ export default function PaymentPage() {
 
           {/* Payment Screenshot Upload */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-            <h3 className="text-lg font-semibold mb-3" style={{ color: '#1F2937' }}>📸 Upload Payment Screenshot</h3>
-            <p className="text-sm mb-4" style={{ color: '#6B7280' }}>
+            <h3 className="font-display text-lg font-semibold mb-3 text-ink">📸 Upload Payment Screenshot</h3>
+            <p className="text-sm mb-4 text-muted">
               After completing your payment, upload a screenshot of your transaction for faster verification.
             </p>
             
@@ -351,13 +351,13 @@ export default function PaymentPage() {
           <div className="flex space-x-4 mb-4">
             <button
               onClick={() => router.push('/books')}
-              className="flex-1 px-6 py-3 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+              className="flex-1 px-6 py-3 bg-ink text-paper rounded-md hover:bg-night transition-colors"
             >
               Cancel Order
             </button>
             <button
               onClick={fetchOrder}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              className="flex-1 px-6 py-3 bg-amber text-white rounded-md hover:bg-amber-soft transition-colors font-semibold"
             >
               Refresh Status
             </button>

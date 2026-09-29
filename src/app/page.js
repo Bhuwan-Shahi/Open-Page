@@ -19,15 +19,15 @@ export default function Home() {
   const fetchBooks = async () => {
     try {
       setLoading(true);
-      
+
       const res = await fetch('/api/books', {
         cache: 'no-store'
       });
-      
+
       if (!res.ok) {
         throw new Error('Failed to fetch books');
       }
-      
+
       const data = await res.json();
       setBooks(data.books || []);
     } catch (error) {
@@ -44,11 +44,9 @@ export default function Home() {
     return (
       <Layout>
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4" style={{ color: '#2D3748' }}>
-            Welcome to Our Digital Bookstore
-          </h1>
-          <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: '#6B728E' }}>
-            Discover and purchase amazing books in PDF format. 
+          <h1 className="font-display text-4xl sm:text-5xl font-bold mb-4">Welcome to Our Digital Bookstore</h1>
+          <p className="text-lg mb-8 max-w-2xl mx-auto text-muted">
+            Discover and purchase amazing books in PDF format.
             Download instantly after purchase and build your digital library.
           </p>
         </div>
@@ -60,15 +58,15 @@ export default function Home() {
   return (
     <Layout>
       {/* Hero Section */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4" style={{ color: '#2D3748' }}>
+      <div className="text-center mb-14">
+        <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4 max-w-4xl mx-auto">
           Welcome to Our Digital Bookstore
         </h1>
-        <p className="text-xl mb-8 max-w-2xl mx-auto" style={{ color: '#6B728E' }}>
-          Discover and purchase amazing books in PDF format. 
+        <p className="text-lg mb-8 max-w-2xl mx-auto text-muted">
+          Discover and purchase amazing books in PDF format.
           Download instantly after purchase and build your digital library.
         </p>
-        
+
         <div className="flex gap-4 justify-center flex-wrap">
           <InteractiveButton href="/books" variant="primary">
             Browse All Books
@@ -77,26 +75,26 @@ export default function Home() {
       </div>
 
       {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        <div className="bg-white rounded-lg shadow-md p-6 text-center border-2" style={{ borderColor: '#4A90E2' }}>
-          <div className="text-3xl font-bold mb-2" style={{ color: '#4A90E2' }}>{books.length}</div>
-          <div style={{ color: '#2D3748' }}>Books Available</div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
+        <div className="bg-card rounded-xl border border-line shadow-sm p-6 text-center">
+          <div className="font-display text-3xl font-bold mb-1 text-amber">{books.length}</div>
+          <div className="text-sm text-muted">Books Available</div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-6 text-center border-2" style={{ borderColor: '#6C757D' }}>
-          <div className="text-3xl font-bold mb-2" style={{ color: '#6C757D' }}>PDF</div>
-          <div style={{ color: '#2D3748' }}>Digital Format</div>
+        <div className="bg-card rounded-xl border border-line shadow-sm p-6 text-center">
+          <div className="font-display text-3xl font-bold mb-1 text-ink">PDF</div>
+          <div className="text-sm text-muted">Digital Format</div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-6 text-center border-2" style={{ borderColor: '#F5A623' }}>
-          <div className="text-3xl font-bold mb-2" style={{ color: '#F5A623' }}>∞</div>
-          <div style={{ color: '#2D3748' }}>Instant Downloads</div>
+        <div className="bg-card rounded-xl border border-line shadow-sm p-6 text-center">
+          <div className="font-display text-3xl font-bold mb-1 text-leaf">∞</div>
+          <div className="text-sm text-muted">Instant Downloads</div>
         </div>
       </div>
 
       {/* Featured Books */}
-      <BookGrid 
-        books={featuredBooks} 
-        title="Featured Books" 
-        showAddButton={true} 
+      <BookGrid
+        books={featuredBooks}
+        title="Featured Books"
+        showAddButton={true}
         user={user}
         onBooksChange={(updatedBooks) => {
           setBooks(updatedBooks);
@@ -105,11 +103,9 @@ export default function Home() {
 
       {/* Call to Action */}
       {books.length > 4 && (
-        <div className="text-center mt-12 rounded-lg p-8 border-2" style={{ backgroundColor: '#F0F8FF', borderColor: '#4A90E2' }}>
-          <h3 className="text-2xl font-bold mb-4" style={{ color: '#2D3748' }}>
-            Explore Our Complete Collection
-          </h3>
-          <p className="mb-6" style={{ color: '#4A90E2' }}>
+        <div className="text-center mt-14 rounded-2xl p-10 border border-line bg-card shadow-sm">
+          <h3 className="font-display text-2xl font-bold mb-3">Explore Our Complete Collection</h3>
+          <p className="mb-6 text-muted">
             We have {books.length} books waiting for you to discover!
           </p>
           <InteractiveButton href="/books" variant="primary">

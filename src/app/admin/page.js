@@ -142,7 +142,7 @@ export default function AdminPage() {
           </div>
         )}
         
-        <h1 className="text-2xl font-bold mb-6" style={{ color: '#2D3748' }}>Add New Book</h1>
+        <h1 className="font-display text-2xl font-bold mb-6">Add New Book</h1>
         
         {message && (
           <div className={`mb-4 p-4 rounded-lg ${
@@ -159,7 +159,7 @@ export default function AdminPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium mb-1" style={{ color: '#2D3748' }}>
+            <label htmlFor="title" className="block text-sm font-medium mb-1">
               Title *
             </label>
             <input
@@ -169,7 +169,7 @@ export default function AdminPage() {
               value={formData.title}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+              className="w-full px-3 py-2 border border-line rounded-md bg-card text-ink focus:outline-none focus:ring-2 focus:ring-amber"
             />
           </div>
 
@@ -184,7 +184,7 @@ export default function AdminPage() {
               value={formData.author}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+              className="w-full px-3 py-2 border border-line rounded-md bg-card text-ink focus:outline-none focus:ring-2 focus:ring-amber"
             />
           </div>
 
@@ -198,7 +198,7 @@ export default function AdminPage() {
               value={formData.description}
               onChange={handleChange}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+              className="w-full px-3 py-2 border border-line rounded-md bg-card text-ink focus:outline-none focus:ring-2 focus:ring-amber"
             />
           </div>
 
@@ -215,7 +215,7 @@ export default function AdminPage() {
                 onChange={handleChange}
                 step="0.01"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-line rounded-md bg-card text-ink focus:outline-none focus:ring-2 focus:ring-amber"
               />
             </div>
 
@@ -230,7 +230,7 @@ export default function AdminPage() {
                 value={formData.category}
                 onChange={handleChange}
                 placeholder="e.g., Fiction, Science, Business"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-line rounded-md bg-card text-ink focus:outline-none focus:ring-2 focus:ring-amber"
               />
             </div>
           </div>
@@ -247,7 +247,7 @@ export default function AdminPage() {
                 value={formData.isbn}
                 onChange={handleChange}
                 placeholder="978-3-16-148410-0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-line rounded-md bg-card text-ink focus:outline-none focus:ring-2 focus:ring-amber"
               />
             </div>
 
@@ -262,7 +262,7 @@ export default function AdminPage() {
                 value={formData.pages}
                 onChange={handleChange}
                 min="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                className="w-full px-3 py-2 border border-line rounded-md bg-card text-ink focus:outline-none focus:ring-2 focus:ring-amber"
               />
             </div>
           </div>
@@ -276,7 +276,7 @@ export default function AdminPage() {
               name="language"
               value={formData.language}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+              className="w-full px-3 py-2 border border-line rounded-md bg-card text-ink focus:outline-none focus:ring-2 focus:ring-amber"
             >
               <option value="English">English</option>
               <option value="Spanish">Spanish</option>
@@ -328,7 +328,7 @@ export default function AdminPage() {
                   onChange={handleChange}
                   placeholder="https://example.com/book.pdf"
                   required={uploadMethod === 'url'}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                  className="w-full px-3 py-2 border border-line rounded-md bg-card text-ink focus:outline-none focus:ring-2 focus:ring-amber"
                 />
                 <p className="text-sm text-gray-500 mt-1">
                   Enter the URL of the PDF file from the web.
@@ -365,8 +365,7 @@ export default function AdminPage() {
               disabled={isSubmitting || isUploading}
               className="w-full text-white py-3 px-4 rounded-md focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors hover:opacity-90"
               style={{ 
-                backgroundColor: '#95BF47',
-                focusRingColor: '#95BF47'
+                backgroundColor: '#95BF47'
               }}
             >
               {isUploading ? 'Uploading PDF...' : (isSubmitting ? 'Adding Book...' : 'Add Book')}

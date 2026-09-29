@@ -65,8 +65,8 @@ export default function UserManagement({ users, onRefresh }) {
               placeholder="Search by email or name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              style={{ color: '#111827', backgroundColor: '#ffffff' }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-amber focus:border-amber"
+
             />
           </div>
 
@@ -77,8 +77,8 @@ export default function UserManagement({ users, onRefresh }) {
             <select
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              style={{ color: '#111827', backgroundColor: '#ffffff' }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-amber focus:border-amber"
+
             >
               <option value="ALL">All Roles</option>
               <option value="USER">Users</option>
@@ -93,8 +93,8 @@ export default function UserManagement({ users, onRefresh }) {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              style={{ color: '#111827', backgroundColor: '#ffffff' }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-1 focus:ring-amber focus:border-amber"
+
             >
               <option value="createdAt">Date Joined</option>
               <option value="email">Email</option>

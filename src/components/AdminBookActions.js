@@ -86,8 +86,8 @@ export default function AdminBookActions({ book, onUpdate, onDelete }) {
   };
 
   return (
-    <div className="border-t border-gray-200 pt-4 mt-4" style={{ backgroundColor: '#f9fafb' }}>
-      <h4 className="text-sm font-semibold mb-3" style={{ color: '#374151' }}>Admin Actions</h4>
+    <div className="border-t border-line pt-4 mt-4 bg-paper">
+      <h4 className="text-sm font-semibold mb-3 text-ink">Admin Actions</h4>
       
       {!isEditing ? (
         <div className="flex space-x-2">
@@ -109,40 +109,40 @@ export default function AdminBookActions({ book, onUpdate, onDelete }) {
       ) : (
         <form onSubmit={handleUpdate} className="space-y-3">
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: '#374151' }}>Title</label>
+            <label className="block text-xs font-medium mb-1">Title</label>
             <input
               type="text"
               name="title"
               value={formData.title}
               onChange={handleInputChange}
-              className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              style={{ color: '#111827', backgroundColor: '#ffffff' }}
+              className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-amber focus:border-amber"
+
               required
             />
           </div>
           
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: '#374151' }}>Author</label>
+            <label className="block text-xs font-medium mb-1">Author</label>
             <input
               type="text"
               name="author"
               value={formData.author}
               onChange={handleInputChange}
-              className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              style={{ color: '#111827', backgroundColor: '#ffffff' }}
+              className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-amber focus:border-amber"
+
               required
             />
           </div>
           
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: '#374151' }}>Price (NPR)</label>
+            <label className="block text-xs font-medium mb-1">Price (NPR)</label>
             <input
               type="number"
               name="price"
               value={formData.price}
               onChange={handleInputChange}
-              className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              style={{ color: '#111827', backgroundColor: '#ffffff' }}
+              className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-amber focus:border-amber"
+
               min="0"
               step="0.01"
               required
@@ -150,27 +150,27 @@ export default function AdminBookActions({ book, onUpdate, onDelete }) {
           </div>
           
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: '#374151' }}>Category</label>
+            <label className="block text-xs font-medium mb-1">Category</label>
             <input
               type="text"
               name="category"
               value={formData.category}
               onChange={handleInputChange}
-              className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              style={{ color: '#111827', backgroundColor: '#ffffff' }}
+              className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-amber focus:border-amber"
+
               placeholder="e.g., Fiction, Science, Technology"
             />
           </div>
           
           <div>
-            <label className="block text-xs font-medium mb-1" style={{ color: '#374151' }}>Description</label>
+            <label className="block text-xs font-medium mb-1">Description</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleInputChange}
               rows="2"
-              className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              style={{ color: '#111827', backgroundColor: '#ffffff' }}
+              className="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:ring-1 focus:ring-amber focus:border-amber"
+
               placeholder="Brief description of the book"
             />
           </div>
@@ -209,7 +209,7 @@ export default function AdminBookActions({ book, onUpdate, onDelete }) {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold text-red-600 mb-4">Delete Book</h3>
-            <p className="mb-6" style={{ color: '#374151' }}>
+            <p className="mb-6">
               Are you sure you want to delete <strong>"{book.title}"</strong>?
               <br />
               <span className="text-sm text-red-500">This action cannot be undone.</span>

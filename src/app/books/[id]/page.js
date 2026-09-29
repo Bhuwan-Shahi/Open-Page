@@ -159,19 +159,19 @@ export default function BookDetail({ params }) {
 
           {/* Book Details */}
           <div>
-            <h1 className="text-3xl font-bold mb-2" style={{ color: '#2D3748' }}>
+            <h1 className="font-display text-3xl font-bold mb-2 text-ink">
               {book.title}
             </h1>
-            <p className="text-xl mb-4" style={{ color: '#6B728E' }}>by {book.author}</p>
+            <p className="font-display text-xl mb-4 text-muted">by {book.author}</p>
             
             {book.category && (
-              <span className="inline-block text-sm px-3 py-1 rounded-full mb-4" style={{ backgroundColor: '#A8B5A2', color: 'white' }}>
+              <span className="inline-block text-sm px-3 py-1 rounded-full mb-4 bg-paper border border-line text-muted">
                 {book.category}
               </span>
             )}
 
             <div className="mb-6">
-              <span className="text-4xl font-bold" style={{ color: '#6B728E' }}>
+              <span className="font-display text-4xl font-bold text-ink">
                 Rs. {book.price}
               </span>
             </div>
@@ -181,18 +181,7 @@ export default function BookDetail({ params }) {
                 <button
                   onClick={handleBuyNow}
                   disabled={isBuying || !user}
-                  className="flex-1 py-3 px-6 rounded-lg font-semibold transition-colors disabled:opacity-50 text-white"
-                  style={{ backgroundColor: '#4A90E2' }}
-                  onMouseEnter={(e) => {
-                    if (!isBuying && user) {
-                      e.target.style.backgroundColor = '#357ABD';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isBuying && user) {
-                      e.target.style.backgroundColor = '#4A90E2';
-                    }
-                  }}
+                  className="flex-1 py-3 px-6 rounded-lg font-semibold transition-colors disabled:opacity-50 text-white bg-amber hover:bg-amber-soft disabled:hover:bg-amber"
                 >
                   {!user ? 'Login to Buy' : (isBuying ? 'Processing...' : 'Buy PDF Now')}
                 </button>
@@ -206,20 +195,7 @@ export default function BookDetail({ params }) {
                 <button 
                   onClick={() => addToCart(book)}
                   disabled={isLoading || !user}
-                  className="flex-1 py-3 px-6 rounded-lg font-semibold transition-colors border-2 disabled:opacity-50"
-                  style={{ borderColor: '#28A745', color: '#28A745' }}
-                  onMouseEnter={(e) => {
-                    if (!isLoading) {
-                      e.target.style.backgroundColor = '#28A745';
-                      e.target.style.color = 'white';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isLoading) {
-                      e.target.style.backgroundColor = 'transparent';
-                      e.target.style.color = '#28A745';
-                    }
-                  }}
+                  className="flex-1 py-3 px-6 rounded-lg font-semibold transition-colors border-2 disabled:opacity-50 border-leaf text-leaf hover:bg-leaf hover:text-white"
                 >
                   {isLoading ? 'Adding...' : 'Add to Cart'}
                 </button>
@@ -239,33 +215,21 @@ export default function BookDetail({ params }) {
                     href={book.pdfUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-lg font-semibold transition-colors text-white"
-                    style={{ backgroundColor: '#DC3545' }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#C82333'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#DC3545'}
+                    className="px-4 py-2 rounded-lg font-semibold transition-colors text-white bg-ink hover:bg-night"
                   >
                     📖 Read PDF
                   </a>
                   <a
                     href={book.pdfUrl}
                     download={`${book.title}.pdf`}
-                    className="px-4 py-2 rounded-lg font-semibold transition-colors border-2"
-                    style={{ borderColor: '#6C757D', color: '#6C757D' }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = '#6C757D';
-                      e.target.style.color = 'white';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'transparent';
-                      e.target.style.color = '#6C757D';
-                    }}
+                    className="px-4 py-2 rounded-lg font-semibold transition-colors border-2 border-line text-muted hover:bg-paper"
                   >
                     📥 Download PDF
                   </a>
                 </div>
                 
                 {/* Embedded PDF Preview */}
-                <div className="border rounded-lg overflow-hidden" style={{ borderColor: '#E9ECEF' }}>
+                <div className="border border-line rounded-lg overflow-hidden">
                   <iframe
                     src={book.pdfUrl}
                     className="w-full"
@@ -319,8 +283,8 @@ export default function BookDetail({ params }) {
 
             {/* Description */}
             <div>
-              <h3 className="text-lg font-semibold mb-2" style={{ color: '#2D3748' }}>Description</h3>
-              <p className="leading-relaxed" style={{ color: '#6B728E' }}>
+              <h3 className="font-display text-lg font-semibold mb-2 text-ink">Description</h3>
+              <p className="leading-relaxed text-ink/80">
                 {book.description || 'No description available for this book.'}
               </p>
             </div>
