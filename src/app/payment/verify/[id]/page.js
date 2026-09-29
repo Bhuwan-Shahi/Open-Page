@@ -37,7 +37,7 @@ export default function PaymentVerificationPage() {
         setOrder(data.order);
         
         // Check if order is already paid
-        if (data.order.status === 'COMPLETED') {
+        if (data.order.status === 'PAID' || data.order.status === 'COMPLETED') {
           setPaymentStatus('success');
         } else if (data.order.status === 'EXPIRED') {
           setPaymentStatus('expired');
@@ -63,16 +63,17 @@ export default function PaymentVerificationPage() {
         },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.verified) {
-          setPaymentStatus('success');
-          setOrder(prev => ({ ...prev, status: 'COMPLETED' }));
-        } else {
-          setPaymentStatus('failed');
-        }
+      const data = await response.json();
+
+      if (data.status === 'expired') {
+        setPaymentStatus('expired');
+        setOrder(prev => (prev ? { ...prev, status: 'EXPIRED' } : prev));
+      } else if (data.status === 'completed' || data.status === 'paid') {
+        setPaymentStatus('success');
+        setOrder(prev => (prev ? { ...prev, status: data.status.toUpperCase() } : prev));
       } else {
-        setPaymentStatus('failed');
+        // Pending admin verification (manual bank-transfer flow)
+        setPaymentStatus('pending');
       }
     } catch (error) {
       console.error('Error verifying payment:', error);
@@ -177,15 +178,24 @@ export default function PaymentVerificationPage() {
                 <h3 className="text-xl font-semibold mb-2" style={{ color: '#059669' }}>Payment Successful!</h3>
                 <p className="mb-4" style={{ color: '#047857' }}>
                   Your payment has been verified and your order is complete.
-                  You now have lifetime access to the PDF.
+                  Your books are now available in your library.
                 </p>
                 <div className="space-y-3">
-                  <button
-                    onClick={() => router.push(`/books/${order.book?.id}`)}
-                    className="w-full px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium"
-                  >
-                    📖 Access Your PDF Now
-                  </button>
+                  {order.orderItems?.length > 1 ? (
+                    <button
+                      onClick={() => router.push('/dashboard')}
+                      className="w-full px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium"
+                    >
+                      📚 View Your Library
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => router.push(`/books/${order.orderItems?.[0]?.book?.id || order.book?.id}/success`)}
+                      className="w-full px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 font-medium"
+                    >
+                      📖 Access Your PDF Now
+                    </button>
+                  )}
                   <div className="text-sm text-center" style={{ color: '#047857' }}>
                     <p>✓ Instant access to PDF download</p>
                     <p>✓ Read online or download to your device</p>
@@ -198,10 +208,9 @@ export default function PaymentVerificationPage() {
             {paymentStatus === 'failed' && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-6">
                 <div className="text-red-600 text-6xl mb-4">❌</div>
-                <h3 className="text-xl font-semibold mb-2" style={{ color: '#DC2626' }}>Payment Not Found</h3>
+                <h3 className="text-xl font-semibold mb-2" style={{ color: '#DC2626' }}>Something went wrong</h3>
                 <p style={{ color: '#B91C1C' }}>
-                  We couldn't verify your payment. Please ensure you've completed the payment 
-                  and try verifying again.
+                  We couldn't check your payment status. Please try again in a moment.
                 </p>
               </div>
             )}

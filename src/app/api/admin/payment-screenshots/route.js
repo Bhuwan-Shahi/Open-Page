@@ -139,6 +139,7 @@ export const PATCH = withAuth(async function(request) {
             where: { id: screenshot.orderId },
             data: {
               status: 'PAID',
+              paidAt: new Date(),
               updatedAt: new Date()
             }
           });

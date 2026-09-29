@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { withAuth } from '@/lib/authMiddleware';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export const POST = withAuth(async function(request, { params }) {
   try {
@@ -31,9 +29,25 @@ export const POST = withAuth(async function(request, { params }) {
       );
     }
 
-    // Check if order is expired
-    if (new Date() > new Date(order.expiresAt)) {
-      // Update order status to expired
+    // Orders can only be verified from PENDING status
+    if (order.status === 'EXPIRED') {
+      return NextResponse.json({
+        verified: false,
+        status: 'expired',
+        message: 'Order has expired. Please create a new order.'
+      });
+    }
+
+    if (order.status !== 'PENDING') {
+      return NextResponse.json({
+        verified: false,
+        status: order.status.toLowerCase(),
+        message: `Order is already ${order.status.toLowerCase()}.`
+      });
+    }
+
+    // Expire stale orders (payment window has passed)
+    if (order.expiresAt && new Date() > new Date(order.expiresAt)) {
       await prisma.order.update({
         where: { id: order.id },
         data: { status: 'EXPIRED' }
@@ -42,48 +56,20 @@ export const POST = withAuth(async function(request, { params }) {
       return NextResponse.json({
         verified: false,
         status: 'expired',
-        message: 'Order has expired'
+        message: 'Order has expired. Please create a new order.'
       });
     }
 
-    // In a real implementation, this is where you would:
-    // 1. Check with your payment gateway API
-    // 2. Verify the payment transaction
-    // 3. Match the payment amount with the order total
-    // 4. Verify the payment reference/transaction ID
-    
-    // For demo purposes, we'll simulate payment verification
-    // In production, replace this with actual payment gateway verification
-    const simulatePaymentCheck = () => {
-      // Simulate a 70% success rate for demo
-      return Math.random() > 0.3;
-    };
-
-    const isPaymentVerified = simulatePaymentCheck();
-
-    if (isPaymentVerified) {
-      // Update order status to completed
-      const updatedOrder = await prisma.order.update({
-        where: { id: order.id },
-        data: { 
-          status: 'COMPLETED',
-          paidAt: new Date()
-        }
-      });
-
-      return NextResponse.json({
-        verified: true,
-        status: 'completed',
-        message: 'Payment verified successfully',
-        order: updatedOrder
-      });
-    } else {
-      return NextResponse.json({
-        verified: false,
-        status: 'pending',
-        message: 'Payment not found. Please ensure you have completed the payment.'
-      });
-    }
+    // Manual bank-transfer flow: customers cannot self-verify payments.
+    // Money moves only after an admin verifies the uploaded payment screenshot,
+    // which grants book access (see /api/admin/payment-screenshots PATCH).
+    return NextResponse.json({
+      verified: false,
+      status: 'pending',
+      message:
+        'Your payment is awaiting manual verification. ' +
+        'Please upload your payment screenshot and our team will verify it shortly.'
+    }, { status: 200 });
 
   } catch (error) {
     console.error('Error verifying payment:', error);

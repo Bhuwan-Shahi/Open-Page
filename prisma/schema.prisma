@@ -79,6 +79,7 @@ model Order {
   userId            String
   total             Float
   status            OrderStatus @default(PENDING)
+  paidAt            DateTime?   // When payment was verified
   expiresAt         DateTime?   // For payment timeout
   screenshotUploaded Boolean    @default(false)
   createdAt         DateTime    @default(now())
@@ -219,6 +220,7 @@ enum OrderStatus {
   PAID
   COMPLETED
   CANCELLED
+  EXPIRED
 }
 
 enum NotificationType {
